@@ -3,18 +3,16 @@ import { loadHeaderFooter, getUserValue, getDateTime, getFormFields } from './ut
 loadHeaderFooter();
 const user = await getUserValue();
 let inputUrl = 'http://localhost:3003/input/';
+let previousUrl = 'http://localhost:3003/input/previous/';
 let csrurl = 'http://localhost:3003/csr/';
 
 const main = document.querySelector('main');
 const iid = document.querySelector('#iid');
-const caidValue = iid.value;
 
 const editbutton = document.getElementById('editaction');
-const collectBtn = document.getElementById('collectBtn');
-const closebutton = document.getElementById('closeaction');
 
-const button = document.getElementById('actiondetailsearch');
-button.addEventListener('click', async (event) => {
+const searchbutton = document.getElementById('actiondetailsearch');
+searchbutton.addEventListener('click', async (event) => {
     event.preventDefault();
     let inputUrl = 'http://localhost:3003/input/';
 
@@ -33,16 +31,19 @@ button.addEventListener('click', async (event) => {
     // Delete the child nodes of the main element
     while (main.firstChild) {
         main.removeChild(main.firstChild);
+        // console.log('deleting child nodes');
     }
+    main.innerHTML = '';
 
     // enable the close button
-    closebutton.disabled = false;
+    // closeactionbutton.disabled = false;
 
     fetch(url, { method: 'GET' })
     .then(response => response.json())
     .then(record => {
 
         for (const key in record) {
+            // console.log(record.length);
             const detailSection = document.createElement('section');
             detailSection.setAttribute('class', 'section');
             const elemRpt = document.createElement('h1');
@@ -79,7 +80,7 @@ button.addEventListener('click', async (event) => {
             } else {
                 aiClosedDate.textContent = 'Closed Date:' + ' ' + record[key]['CLOSED_DATE'].substring(0, 10);
                 // enable the closebutton
-                closebutton.disabled = true;
+                // closeactionbutton.disabled = true;
                 console.log('closed date is NOT null');
             }
             // toggle display of doit if recur id is not null
@@ -97,7 +98,6 @@ button.addEventListener('click', async (event) => {
                 doit.style.display = 'none';
                 console.log('recur id is null');
             }
-
 
             aiClosedDate.setAttribute('class', 'tbl');
 
@@ -137,6 +137,9 @@ button.addEventListener('click', async (event) => {
             const collectBtn = document.createElement('button');
             collectBtn.setAttribute('id', 'collectBtn');
             collectBtn.textContent = 'Collect Data';
+            const previousBtn = document.createElement('button');
+            previousBtn.setAttribute('id', 'previousBtn');
+            previousBtn.textContent = 'Data History';
 
 
             // Append fields to the detail section
@@ -169,6 +172,7 @@ button.addEventListener('click', async (event) => {
             main.appendChild(elemRpt);
             main.appendChild(elemId);
             main.appendChild(collectBtn);
+            main.appendChild(previousBtn);
             // main.appendChild(detailSection);
 
             detailSection.appendChild(ncTrendTitle);
@@ -180,51 +184,51 @@ button.addEventListener('click', async (event) => {
             detailSection.appendChild(responseTitle);
             detailSection.appendChild(elemResponse);
 
-            // add form for entry of values
-            let data_collectors = ['05TE', '07TE', '08TE'];
-            if (data_collectors.includes (record[key]['SUBJECT'])) {
-                console.log('in data collectors');
-                let characteristics = [];
-                switch (record[key]['SUBJECT']) {
-                    case '05TE':
-                        characteristics = ['Deox mL', 'Free Acid mL', 'Temp F'];
-                        break;
-                    case '07TE':
-                        characteristics = ['Free Acid mL', 'Iron content','Temp F'];
-                        break;
-                    case '08TE':
-                        // code block
-                        break;
-                    default:
-                        // code block
-                }
-                // create a form for the data collector
-                const collectionform = document.createElement('collectionform');
-                collectionform.setAttribute('id', 'collectionform');
-                // iterate through the characteristics and create input fields
-                for (const key in characteristics) {
-                    const elemCharacteristics = document.createElement('input');
-                    elemCharacteristics.setAttribute('type', 'text');
-                    elemCharacteristics.setAttribute('id', characteristics[key]);
-                    elemCharacteristics.setAttribute('name', characteristics[key]);
-                    elemCharacteristics.setAttribute('value', characteristics[key]);
-                    collectionform.appendChild(elemCharacteristics);
-                }
-                // create a submit button
-                const submit = document.createElement('input');
-                submit.setAttribute('type', 'submit');
-                submit.setAttribute('value', 'Submit');
-                collectionform.appendChild(submit);
+            // // add form for entry of values
+            // let data_collectors = ['05TE', '07TE', '08TE'];
+            // if (data_collectors.includes (record[key]['SUBJECT'])) {
+            //     console.log('in data collectors');
+            //     let characteristics = [];
+            //     switch (record[key]['SUBJECT']) {
+            //         case '05TE':
+            //             characteristics = ['Deox mL', 'Free Acid mL', 'Temp F'];
+            //             break;
+            //         case '07TE':
+            //             characteristics = ['Free Acid mL', 'Iron content','Temp F'];
+            //             break;
+            //         case '08TE':
+            //             // code block
+            //             break;
+            //         default:
+            //             // code block
+            //     }
+            //     // create a form for the data collector
+            //     const collectionform = document.createElement('collectionform');
+            //     collectionform.setAttribute('id', 'collectionform');
+            //     // iterate through the characteristics and create input fields
+            //     for (const key in characteristics) {
+            //         const elemCharacteristics = document.createElement('input');
+            //         elemCharacteristics.setAttribute('type', 'text');
+            //         elemCharacteristics.setAttribute('id', characteristics[key]);
+            //         elemCharacteristics.setAttribute('name', characteristics[key]);
+            //         elemCharacteristics.setAttribute('value', characteristics[key]);
+            //         collectionform.appendChild(elemCharacteristics);
+            //     }
+            //     // create a submit button
+            //     const submit = document.createElement('input');
+            //     submit.setAttribute('type', 'submit');
+            //     submit.setAttribute('value', 'Submit');
+            //     collectionform.appendChild(submit);
                 
                 
-                try {
-                    detailSection.appendChild(collectionform);
-                }
-                catch (e) {
-                    console.log('no characteristics form');
-                }
+            //     try {
+            //         detailSection.appendChild(collectionform);
+            //     }
+            //     catch (e) {
+            //         console.log('no characteristics form');
+            //     }
                 
-            }
+            // }
 
             main.appendChild(detailSection);
 
@@ -236,6 +240,10 @@ collectBtn.addEventListener('click', (event) => {
     event.preventDefault();        
 
     const collectform = document.getElementById('collectform');
+    // Delete the child nodes of the main element
+    while (collectform.firstChild) {
+        collectform.removeChild(collectform.firstChild);
+    }
     
     // First input element
     const cid = document.createElement('input');
@@ -302,6 +310,69 @@ collectBtn.addEventListener('click', (event) => {
     collectCancel.addEventListener('click', () => {
         collectModal.close();
     });
+
+    
+    });
+
+    // Show previous data modal
+    // const previousBtn = document.querySelector('#previousBtn');
+    previousBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const url = previousUrl + aidValue;
+        // console.log(url);
+        const response = await fetch(url, { method: 'GET' });
+        const json = await response.json();
+        console.log(json);
+    
+        // Create the modal
+        const previousModal = document.querySelector('[previous-data-modal]');
+        // open modal on button click
+        previousModal.showModal();
+        // make table for the data
+        const previousTable = document.createElement('table');
+        const previousTableHead = document.createElement('thead');
+        const previousTableBody = document.createElement('tbody');
+        const previousTableHeadRow = document.createElement('tr');
+        const previousTableHeadCell1 = document.createElement('th');
+        const previousTableHeadCell2 = document.createElement('th');
+
+        previousTableHeadCell1.textContent = 'Collection ID';
+
+        previousModal.appendChild(previousTable);
+        previousTable.appendChild(previousTableHead);
+        previousTable.appendChild(previousTableBody);
+        previousTableHead.appendChild(previousTableHeadRow);
+        previousTableHeadRow.appendChild(previousTableHeadCell1);
+        previousTableHeadRow.appendChild(previousTableHeadCell2);
+
+        for (const key in json) {
+            const previousTableRow = document.createElement('tr');
+            const previousTableCell1 = document.createElement('td');
+            const previousTableCell2 = document.createElement('td');
+
+            previousTableCell1.textContent = json[key]['INPUT_ID'];
+            previousTableCell2.textContent = json[key]['RESPONSE_TEXT'];
+
+            previousTableBody.appendChild(previousTableRow);
+            previousTableRow.appendChild(previousTableCell1);
+            previousTableRow.appendChild(previousTableCell2);
+
+        }
+        
+        // Create close button
+        const previousCloseBtn = document.createElement('button');
+        previousCloseBtn.setAttribute('id', 'previous-close');
+        previousCloseBtn.textContent = 'Close';
+        previousModal.appendChild(previousCloseBtn);
+
+        // close the previous data modal
+        const previousClose = document.getElementById('previous-close');
+        previousClose.addEventListener('click', () => {
+            previousModal.close();
+        });
+        
+
+
     
     const collectSave = document.getElementById('collectsave');
     collectSave.addEventListener('click', async (event) => {
@@ -337,8 +408,10 @@ collectBtn.addEventListener('click', (event) => {
         const time = d.toLocaleTimeString();
         // const mydate = date + ' ' + time;
 
-        const myCustomer = document.getElementById('CUSTOMER_ID').value;
-        const myUnit = document.getElementById('UNIT').value;
+        let myCustomer = document.getElementById('CUSTOMER_ID').value.toUpperCase();
+        // myCustomer = myCustomer.toUpperCase();
+        let myUnit = document.getElementById('UNIT').value;
+        myUnit = myUnit.toUpperCase();
         const myValue = document.getElementById('VALUE').value;
         const myDate = document.getElementById('SAMPLE_DATE').value + ' ' + time;
 
@@ -354,8 +427,6 @@ collectBtn.addEventListener('click', (event) => {
         
         const response = await fetch(url, options);
         const json = await response.json();
-        // const button = document.querySelector('[data-collect-close-modal]');
-        // button.click();
         collectModal.close();
     }
     );
@@ -364,8 +435,6 @@ collectBtn.addEventListener('click', (event) => {
     // });
     // toggle enable/disable of the edit button
     editbutton.disabled = false;
-
-
 
 const modal = document.querySelector('[data-modal]');
 // open modal on edit button click
@@ -455,28 +524,33 @@ modalsave.addEventListener('click', async (event) => {
 
     const response = await fetch(url, options);
     const json = await response.json();
-    const button = document.getElementById('actiondetailsearch');
-    button.click();    
+    // const button = document.getElementById('actiondetailsearch');
+    searchbutton.click();    
     modal.close();
+});   
+    
+
+    });
 });
 
-
-    
-    
-    // close action item
-const closeaction = document.getElementById('closeaction');
-closeaction.addEventListener('click', async (event) => {
-    event.preventDefault();
-    const iid = document.querySelector('#iid');    
-    let aidValue = iid.value;
-    if (aidValue.length === 0) {
-        alert('Please enter the Input ID');
-    } else {
-        // console.log(aidValue);
-        // console.log(aidValue.length);
-        while (aidValue.length < 7) {
-            aidValue = '0' + aidValue;
-        }
+// close action item (Enters closed date)
+const closeactionbutton = document.querySelector('#closeactionbtn');
+// set the once to false
+// closeactionbutton.setAttribute('once', 'true');
+closeactionbutton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        // closeactionbutton.addEventListener('click', closeActionHandler);
+        console.log('closing the action item');
+        const iid = document.querySelector('#iid');    
+        let aidValue = iid.value;
+        if (aidValue.length === 0) {
+            alert('Please enter the Input ID');
+        } else {
+            // console.log(aidValue);
+            // console.log(aidValue.length);
+            while (aidValue.length < 7) {
+                aidValue = '0' + aidValue;
+            }
     }
 
     const url = inputUrl + 'close/' + aidValue;
@@ -498,11 +572,12 @@ closeaction.addEventListener('click', async (event) => {
 
     const response = await fetch(url, options);
     const json = await response.json();
-    // console.log(json);
-    // alert('Record updated');
-    const button = document.getElementById('actiondetailsearch');
-    button.click();
+    // console.log('auto click the search button (Closing the action item)');
+    searchbutton.click();
+    // const searchbutton = document.querySelector('#actiondetailsearch');
+    // wait for the action item to close
+    // main.innerHTML = '';
+    // window.setTimeout(function() {
+    //     searchbutton.click();
+    // }, 500);
 });
-    });
-}
-);

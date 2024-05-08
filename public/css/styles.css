@@ -44,6 +44,10 @@ section {
 section:nth-child(1) {
     grid-template-columns: 1fr 1fr;
 }
+h1 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 section h1 {
     grid-column: span 3;
     font-size: 2rem;
@@ -487,6 +491,11 @@ input {
     padding: 0;
 }
 
+#collectBtn {
+    margin-bottom: 8px;
+    margin-right: 10px;
+}
+
 
 @media print {
     form{
@@ -513,4 +522,5 @@ input {
     #inspectiondate {
         display: block;
     }
+
 }

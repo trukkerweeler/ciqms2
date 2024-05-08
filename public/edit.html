@@ -16,11 +16,10 @@
     <h1>Detail - Edit</h1>
     <form>
         <label for="search">Enter Action Id:</label>
-        <input type="text" name="search" id="iid" value="349">
+        <input type="text" name="search" id="iid" value="400">
         <button type="submit" id="actiondetailsearch">Search</button>
         <button type="submit" id="editaction" disabled>Append</button>
-        <!-- <button type="submit" id="collectBtn" disabled>Collect Data</button> -->
-        <button type="submit" id="closeaction">Close</button>
+        <button id="closeactionbtn">Close</button>
     </form>
     <div id="stamp">
         <div id="doit"></div>
@@ -34,8 +33,6 @@
                 <option value="RESPONSE_TEXT" selected>Response</option>
             </select>
             
-            <!-- <label for="appendcheckbox" id="appendcheckboxlabel">Close AI:</label>
-            <input type="checkbox" id="appendcheckbox" name="appendcheckbox" value="append"> -->
             <input type="textarea" id="newtext" wrap="soft" rows="2" cols="20">
             <button type="submit" formmethod="dialog">Cancel</button>
             <button id="modalsave" type="submit">Save</button>
@@ -46,6 +43,10 @@
         <h3>Data Entry</h3>
         <form id="collectform" action="">
         </form>
+    </dialog>
+    <dialog previous-data-modal>
+        <h3>Data Entry</h3>
+        
     </dialog>
     <main id="main">
         

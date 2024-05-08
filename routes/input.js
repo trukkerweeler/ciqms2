@@ -153,10 +153,12 @@ router.post('/', (req, res) => {
 
         
         // escape the apostrophe
-        let inputText = req.body.INPUT_TEXT.replace(/'/g, "\\'");
+        const inputText = req.body.INPUT_TEXT.replace(/'/g, "\\'");
+        console.log(inputText);
         // escape the backslash
-        inputText = req.body.INPUT_TEXT.replace(/\\/g, "\\\\");
-        const insertQuery = `insert into PPL_INPT_TEXT values ('${req.body.INPUT_ID}', '${inputText}')`;
+        const iid = req.body.INPUT_ID;
+        // const inputText = req.body.INPUT_TEXT.replace(/\\/g, "\\\\");
+        const insertQuery = `insert into PPL_INPT_TEXT values ('${iid}', '${inputText}')`;
         connection.query(insertQuery, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for PPL_INPT_TEXT insert: ' + err);
@@ -351,6 +353,46 @@ router.put('/close/:id', (req, res) => {
         return;
     }
 
+});
+
+// ==================================================
+// Get previous records
+router.get('/previous/:id', (req, res) => {
+    // console.log(req.params.id);
+    try {
+        const connection = mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            port: 3306,
+            database: 'quality'
+        });
+        connection.connect(function(err) {
+            if (err) {
+                console.error('Error connecting: ' + err.stack);
+                return;
+            }
+        // console.log('Connected to DB');
+
+        const query = `with subjects as (select * from PEOPLE_INPUT where SUBJECT = (select SUBJECT from PEOPLE_INPUT where INPUT_ID = '${req.params.id}')) select * from PPL_INPT_RSPN pir join subjects on pir.INPUT_ID = subjects.INPUT_ID order by pir.INPUT_ID desc limit 5`;
+
+        // console.log(query);
+
+        connection.query(query, (err, rows, fields) => {
+            if (err) {
+                console.log('Failed to query for corrective actions: ' + err);
+                res.sendStatus(500);
+                return;
+            }
+            res.json(rows);
+        });
+
+        connection.end();
+        });
+    } catch (err) {
+        console.log('Error connecting to Db 393');
+        return;
+    }
 });
 
 
