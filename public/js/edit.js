@@ -101,9 +101,9 @@ searchbutton.addEventListener('click', async (event) => {
 
             aiClosedDate.setAttribute('class', 'tbl');
 
-            const caAssTo = document.createElement('p');
-            caAssTo.textContent = 'Assigned To:' + ' ' + record[key]['ASSIGNED_TO'];
-            caAssTo.setAttribute('class', 'tbl');
+            const aiAssTo = document.createElement('p');
+            aiAssTo.textContent = 'Assigned To:' + ' ' + record[key]['ASSIGNED_TO'];
+            aiAssTo.setAttribute('class', 'tbl');
             const reqBy = document.createElement('p');
             reqBy.textContent = 'Request By:' + ' ' + record[key]['PEOPLE_ID'];
             reqBy.setAttribute('class', 'tbl');
@@ -144,7 +144,7 @@ searchbutton.addEventListener('click', async (event) => {
 
             // Append fields to the detail section
             detailSection.appendChild(aiDate);
-            detailSection.appendChild(caAssTo);
+            detailSection.appendChild(aiAssTo);
             detailSection.appendChild(aiClosedDate);
             detailSection.appendChild(aiProj);
             detailSection.appendChild(reqBy);
@@ -184,53 +184,8 @@ searchbutton.addEventListener('click', async (event) => {
             detailSection.appendChild(responseTitle);
             detailSection.appendChild(elemResponse);
 
-            // // add form for entry of values
-            // let data_collectors = ['05TE', '07TE', '08TE'];
-            // if (data_collectors.includes (record[key]['SUBJECT'])) {
-            //     console.log('in data collectors');
-            //     let characteristics = [];
-            //     switch (record[key]['SUBJECT']) {
-            //         case '05TE':
-            //             characteristics = ['Deox mL', 'Free Acid mL', 'Temp F'];
-            //             break;
-            //         case '07TE':
-            //             characteristics = ['Free Acid mL', 'Iron content','Temp F'];
-            //             break;
-            //         case '08TE':
-            //             // code block
-            //             break;
-            //         default:
-            //             // code block
-            //     }
-            //     // create a form for the data collector
-            //     const collectionform = document.createElement('collectionform');
-            //     collectionform.setAttribute('id', 'collectionform');
-            //     // iterate through the characteristics and create input fields
-            //     for (const key in characteristics) {
-            //         const elemCharacteristics = document.createElement('input');
-            //         elemCharacteristics.setAttribute('type', 'text');
-            //         elemCharacteristics.setAttribute('id', characteristics[key]);
-            //         elemCharacteristics.setAttribute('name', characteristics[key]);
-            //         elemCharacteristics.setAttribute('value', characteristics[key]);
-            //         collectionform.appendChild(elemCharacteristics);
-            //     }
-            //     // create a submit button
-            //     const submit = document.createElement('input');
-            //     submit.setAttribute('type', 'submit');
-            //     submit.setAttribute('value', 'Submit');
-            //     collectionform.appendChild(submit);
-                
-                
-            //     try {
-            //         detailSection.appendChild(collectionform);
-            //     }
-            //     catch (e) {
-            //         console.log('no characteristics form');
-            //     }
-                
-            // }
-
             main.appendChild(detailSection);
+        }
 
 // collect action modal=======================================
 // collect action modal=======================================
@@ -311,8 +266,67 @@ collectBtn.addEventListener('click', (event) => {
         collectModal.close();
     });
 
-    
+    const collectSave = document.querySelector('#collectsave');
+    collectSave.addEventListener('click', async (event) => {
+        // alert('Collecting data');
+        event.preventDefault();
+        // // console.log(csrurl + 'nextCSRid')
+        let responseNextId = await fetch( csrurl + 'nextCSRid', { method: 'GET' })
+        let nextCSRId = await responseNextId.json();
+        // prepend with 0's to 7 digits
+        nextCSRId = nextCSRId.toString();
+        while (nextCSRId.length < 7) {
+            nextCSRId = '0' + nextCSRId;
+        }
+        // console.log(nextCSRId);
+        
+        let aidValue = document.querySelector('#iid').value;
+        if (aidValue.length === 0) {
+            alert('Please enter the Input ID');
+        } else {
+            while (aidValue.length < 7) {
+                aidValue = '0' + aidValue;
+            }
+        }
+        
+        const url = csrurl + nextCSRId;
+        
+        let data = {
+            COLLECTION_ID: nextCSRId,
+            INPUT_ID: aidValue,
+            INPUT_USER: await getUserValue(),
+        };
+        const d = new Date();
+        const date = d.toISOString().substring(0, 10);
+        const time = d.toLocaleTimeString();
+        // const mydate = date + ' ' + time;
+
+        let myCustomer = document.getElementById('CUSTOMER_ID').value.toUpperCase();
+        // myCustomer = myCustomer.toUpperCase();
+        let myUnit = document.getElementById('UNIT').value;
+        myUnit = myUnit.toUpperCase();
+        const myValue = document.getElementById('VALUE').value;
+        const myDate = document.getElementById('SAMPLE_DATE').value + ' ' + time;
+
+        data = {...data, CUSTOMER_ID: myCustomer, UNIT: myUnit, VALUE: myValue, SAMPLE_DATE: myDate};
+        console.log(data);
+        
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        
+        const response = await fetch(url, options);
+        const json = await response.json();
+        collectModal.close();
     });
+
+
+    
+});
 
     // Show previous data modal
     // const previousBtn = document.querySelector('#previousBtn');
@@ -370,68 +384,67 @@ collectBtn.addEventListener('click', (event) => {
         previousClose.addEventListener('click', () => {
             previousModal.close();
         });
-        
-
-
-    
-    const collectSave = document.getElementById('collectsave');
-    collectSave.addEventListener('click', async (event) => {
-        event.preventDefault();
-        // console.log(csrurl + 'nextCSRid')
-        let responseNextId = await fetch( csrurl + 'nextCSRid', { method: 'GET' })
-        let nextCSRId = await responseNextId.json();
-        // prepend with 0's to 7 digits
-        nextCSRId = nextCSRId.toString();
-        while (nextCSRId.length < 7) {
-            nextCSRId = '0' + nextCSRId;
-        }
-        // console.log(nextCSRId);
-        
-        let aidValue = document.querySelector('#iid').value;
-        if (aidValue.length === 0) {
-            alert('Please enter the Input ID');
-        } else {
-            while (aidValue.length < 7) {
-                aidValue = '0' + aidValue;
-            }
-        }
-        
-        const url = csrurl + nextCSRId;
-        
-        let data = {
-            COLLECTION_ID: nextCSRId,
-            INPUT_ID: aidValue,
-            INPUT_USER: await getUserValue(),
-        };
-        const d = new Date();
-        const date = d.toISOString().substring(0, 10);
-        const time = d.toLocaleTimeString();
-        // const mydate = date + ' ' + time;
-
-        let myCustomer = document.getElementById('CUSTOMER_ID').value.toUpperCase();
-        // myCustomer = myCustomer.toUpperCase();
-        let myUnit = document.getElementById('UNIT').value;
-        myUnit = myUnit.toUpperCase();
-        const myValue = document.getElementById('VALUE').value;
-        const myDate = document.getElementById('SAMPLE_DATE').value + ' ' + time;
-
-        data = {...data, CUSTOMER_ID: myCustomer, UNIT: myUnit, VALUE: myValue, SAMPLE_DATE: myDate};
-        
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
-        
-        const response = await fetch(url, options);
-        const json = await response.json();
-        collectModal.close();
-    }
-    );
 });
-        }
+        
+    
+    // const collectSave = document.querySelector('#collectsave');
+    // collectSave.addEventListener('click', async (event) => {
+    //     alert('Collecting data');
+    //     event.preventDefault();
+    //     // // console.log(csrurl + 'nextCSRid')
+    //     // let responseNextId = await fetch( csrurl + 'nextCSRid', { method: 'GET' })
+    //     // let nextCSRId = await responseNextId.json();
+    //     // // prepend with 0's to 7 digits
+    //     // nextCSRId = nextCSRId.toString();
+    //     // while (nextCSRId.length < 7) {
+    //     //     nextCSRId = '0' + nextCSRId;
+    //     // }
+    //     // // console.log(nextCSRId);
+        
+    //     // let aidValue = document.querySelector('#iid').value;
+    //     // if (aidValue.length === 0) {
+    //     //     alert('Please enter the Input ID');
+    //     // } else {
+    //     //     while (aidValue.length < 7) {
+    //     //         aidValue = '0' + aidValue;
+    //     //     }
+    //     // }
+        
+    //     // const url = csrurl + nextCSRId;
+        
+    //     // let data = {
+    //     //     COLLECTION_ID: nextCSRId,
+    //     //     INPUT_ID: aidValue,
+    //     //     INPUT_USER: await getUserValue(),
+    //     // };
+    //     // const d = new Date();
+    //     // const date = d.toISOString().substring(0, 10);
+    //     // const time = d.toLocaleTimeString();
+    //     // // const mydate = date + ' ' + time;
+
+    //     // let myCustomer = document.getElementById('CUSTOMER_ID').value.toUpperCase();
+    //     // // myCustomer = myCustomer.toUpperCase();
+    //     // let myUnit = document.getElementById('UNIT').value;
+    //     // myUnit = myUnit.toUpperCase();
+    //     // const myValue = document.getElementById('VALUE').value;
+    //     // const myDate = document.getElementById('SAMPLE_DATE').value + ' ' + time;
+
+    //     // data = {...data, CUSTOMER_ID: myCustomer, UNIT: myUnit, VALUE: myValue, SAMPLE_DATE: myDate};
+    //     // console.log(data);
+        
+    //     // const options = {
+    //     //     method: 'POST',
+    //     //     headers: {
+    //     //         'Content-Type': 'application/json'
+    //     //     },
+    //     //     body: JSON.stringify(data)
+    //     // };
+        
+    //     // const response = await fetch(url, options);
+    //     // const json = await response.json();
+    //     // collectModal.close();
+    // });
+// }
     // });
     // toggle enable/disable of the edit button
     editbutton.disabled = false;
@@ -524,7 +537,6 @@ modalsave.addEventListener('click', async (event) => {
 
     const response = await fetch(url, options);
     const json = await response.json();
-    // const button = document.getElementById('actiondetailsearch');
     searchbutton.click();    
     modal.close();
 });   
