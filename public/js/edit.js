@@ -384,68 +384,8 @@ collectBtn.addEventListener('click', (event) => {
         previousClose.addEventListener('click', () => {
             previousModal.close();
         });
-});
-        
+});        
     
-    // const collectSave = document.querySelector('#collectsave');
-    // collectSave.addEventListener('click', async (event) => {
-    //     alert('Collecting data');
-    //     event.preventDefault();
-    //     // // console.log(csrurl + 'nextCSRid')
-    //     // let responseNextId = await fetch( csrurl + 'nextCSRid', { method: 'GET' })
-    //     // let nextCSRId = await responseNextId.json();
-    //     // // prepend with 0's to 7 digits
-    //     // nextCSRId = nextCSRId.toString();
-    //     // while (nextCSRId.length < 7) {
-    //     //     nextCSRId = '0' + nextCSRId;
-    //     // }
-    //     // // console.log(nextCSRId);
-        
-    //     // let aidValue = document.querySelector('#iid').value;
-    //     // if (aidValue.length === 0) {
-    //     //     alert('Please enter the Input ID');
-    //     // } else {
-    //     //     while (aidValue.length < 7) {
-    //     //         aidValue = '0' + aidValue;
-    //     //     }
-    //     // }
-        
-    //     // const url = csrurl + nextCSRId;
-        
-    //     // let data = {
-    //     //     COLLECTION_ID: nextCSRId,
-    //     //     INPUT_ID: aidValue,
-    //     //     INPUT_USER: await getUserValue(),
-    //     // };
-    //     // const d = new Date();
-    //     // const date = d.toISOString().substring(0, 10);
-    //     // const time = d.toLocaleTimeString();
-    //     // // const mydate = date + ' ' + time;
-
-    //     // let myCustomer = document.getElementById('CUSTOMER_ID').value.toUpperCase();
-    //     // // myCustomer = myCustomer.toUpperCase();
-    //     // let myUnit = document.getElementById('UNIT').value;
-    //     // myUnit = myUnit.toUpperCase();
-    //     // const myValue = document.getElementById('VALUE').value;
-    //     // const myDate = document.getElementById('SAMPLE_DATE').value + ' ' + time;
-
-    //     // data = {...data, CUSTOMER_ID: myCustomer, UNIT: myUnit, VALUE: myValue, SAMPLE_DATE: myDate};
-    //     // console.log(data);
-        
-    //     // const options = {
-    //     //     method: 'POST',
-    //     //     headers: {
-    //     //         'Content-Type': 'application/json'
-    //     //     },
-    //     //     body: JSON.stringify(data)
-    //     // };
-        
-    //     // const response = await fetch(url, options);
-    //     // const json = await response.json();
-    //     // collectModal.close();
-    // });
-// }
-    // });
     // toggle enable/disable of the edit button
     editbutton.disabled = false;
 
@@ -584,6 +524,11 @@ closeactionbutton.addEventListener('click', async (event) => {
 
     const response = await fetch(url, options);
     const json = await response.json();
+    
+    const formappendai = document.querySelector('#formappendai');
+    // clear the form fields
+    formappendai.innerHTML = '';
+
     // console.log('auto click the search button (Closing the action item)');
     searchbutton.click();
     // const searchbutton = document.querySelector('#actiondetailsearch');
@@ -592,4 +537,5 @@ closeactionbutton.addEventListener('click', async (event) => {
     // window.setTimeout(function() {
     //     searchbutton.click();
     // }, 500);
+
 });

@@ -56,8 +56,6 @@ router.get('/', (req, res) => {
 
 });
 
-
-
 // Get the next ID for a new record
 router.get('/nextId', (req, res) => {
     // res.json('0000005');

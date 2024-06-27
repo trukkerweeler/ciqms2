@@ -82,13 +82,15 @@ router.get('/:id', (req, res) => {
         , pir.RESPONSE_TEXT
         , pif.FOLLOWUP_TEXT 
         , p.NAME
+        , p.LEADER
         , pd.DESCRIPTION
         FROM quality.PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID
         left join PPL_INPT_FLUP pif on pi.INPUT_ID = pif.INPUT_ID
         left join PPL_INPT_RSPN pir on pi.INPUT_ID = pir.INPUT_ID 
         left join PROJECT p on pi.PROJECT_ID = p.PROJECT_ID
         left join PROJ_DESC pd on pi.PROJECT_ID = pd.PROJECT_ID
-        where p.PROJECT_ID = '${req.params.id}'`;
+        where p.PROJECT_ID = '${req.params.id}'
+        order by pi.CLOSED, pi.INPUT_ID desc`;
 
         // console.log(query);
 

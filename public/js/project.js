@@ -25,10 +25,13 @@ fetch(url, { method: 'GET' })
     const fieldList = ['INPUT_ID', 'INPUT_DATE', 'SUBJECT', 'INPUT_TEXT', 'CLOSED', 'CLOSED_DATE'];        
     const descriptionSection = document.createElement('section');
     const detailParagraph = document.createElement('p');
-    detailParagraph.textContent = record[0].DESCRIPTION;
+    detailParagraph.textContent = 'Project Description: ' + record[0].DESCRIPTION + ' ';
+    const leader = document.createElement('h3');
+    leader.textContent = 'Project Leader: ' + record[0].LEADER;
     const descriptionHeader = document.createElement('h2');
     descriptionHeader.textContent = record[0].NAME;
     descriptionSection.appendChild(descriptionHeader);
+    descriptionSection.appendChild(leader);
     descriptionSection.appendChild(detailParagraph);
     main.appendChild(descriptionSection);
     const actionsHeader = document.createElement('h1');
