@@ -6,8 +6,10 @@ const router = express.Router();
 const mysql = require('mysql');
 
 router.post('/', async (req, res) => {
+    // prefix the id with 0s to make it 7 digits
+    const inputId = req.body.INPUT_ID.toString().padStart(7, '0');
     const sql = `INSERT INTO PPL_INPT_RCUR (RECUR_ID, INPUT_ID, ASSIGNED_TO, FREQUENCY, SUBJECT, STATUS) VALUES (?, ?, ?, ?, ?, ?)`;
-    const inserts = [req.body['RECUR_ID'], req.body['INPUT_ID'], req.body['ASSIGNED_TO'], req.body['FREQUENCY'], req.body['SUBJECT'], req.body['STATUS']];  
+    const inserts = [req.body['RECUR_ID'], inputId, req.body['ASSIGNED_TO'], req.body['FREQUENCY'], req.body['SUBJECT'], req.body['STATUS']];  
     const query = mysql.format(sql, inserts);
     // console.log(query);
     try {
