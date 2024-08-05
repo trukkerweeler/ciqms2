@@ -262,7 +262,8 @@ router.put('/:id', (req, res) => {
         case 'FOLLOWUP_TEXT':
             // console.log('Followup');
             mytable = 'PPL_INPT_FLUP';
-            appended = req.body.FOLLOWUP_TEXT
+            appended = req.body.FOLLOWUP_TEXT.replace(/'/g, "/''");
+            // appended = req.body.FOLLOWUP_TEXT
             break;
         case 'INPUT_TEXT':
             // console.log('Input');

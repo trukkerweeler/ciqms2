@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         // console.log('Connected to DB 26');
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective action: ' + err);
+                console.log('Failed to query for input: ' + err);
                 res.sendStatus(500);
                 return;
             }
