@@ -342,6 +342,10 @@ collectBtn.addEventListener('click', (event) => {
         const previousModal = document.querySelector('[previous-data-modal]');
         // open modal on button click
         previousModal.showModal();
+        // clear the previous modal
+        while (previousModal.firstChild) {
+            previousModal.removeChild(previousModal.firstChild);
+        }
         // make table for the data
         const previousTable = document.createElement('table');
         const previousTableHead = document.createElement('thead');
