@@ -7,7 +7,7 @@ let urlParams = new URLSearchParams(queryString);
 let iid = urlParams.get('id');
     
 
-const url = 'http://localhost:3003/input/' + iid;
+const url = 'http://localhost:3003/ncm/' + iid;
 
 const main = document.querySelector('main');
 // Delete the child nodes of the main element

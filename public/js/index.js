@@ -1,7 +1,15 @@
 import { loadHeaderFooter } from './utils.mjs';
+// import { dotenv } from '/dotenv';
+// dotenv.config();
+// // require("dotenv").config();
+
+// const NONCONFORMANCE_PORT = process.env.NONCONFORMANCE_PORT;
+
 loadHeaderFooter();
 
-const url = 'http://localhost:3003/input';
+
+// const url = `http://localhost:${NONCONFORMANCE_PORT}/ncm`;
+const url = `http://localhost:3010/ncm`;
 
 function getRecords () {
     const main = document.querySelector('main');
@@ -36,7 +44,8 @@ function getRecords () {
                         td.textContent = record[key].slice(0,10);
                     } else {
                         if (key == 'INPUT_ID') {
-                            td.innerHTML = `<a href="http://localhost:3003/input.html?id=${record[key]}">${record[key]}</a>`;
+                            // td.innerHTML = `<a href="http://localhost:${NONCONFORMANCE_PORT}/input.html?id=${record[key]}">${record[key]}</a>`;
+                            td.innerHTML = `<a href="http://localhost:3010/input.html?id=${record[key]}">${record[key]}</a>`;
                         } else {
                             td.textContent = record[key];
                         }

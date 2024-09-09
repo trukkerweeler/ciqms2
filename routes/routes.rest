@@ -24,3 +24,6 @@ GET http://localhost:3003/csr/nextId
 
 ###
 GET http://localhost:3003/input/nextId
+
+###
+GET http://localhost:3010/ncm/nextId

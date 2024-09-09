@@ -1,13 +1,13 @@
 import { loadHeaderFooter } from './utils.mjs';
 loadHeaderFooter();
 
-const url = 'http://localhost:3003/input';
+const url = 'http://localhost:3010/ncm';
 
-let myRequestDate = new Date();
-myRequestDate.setDate(myRequestDate.getDate());
-myRequestDate = myRequestDate.toISOString().slice(0, 10);
-const defaultCreateDate = document.getElementById('INPUT_DATE');
-defaultCreateDate.value = myRequestDate;
+let recordDate = new Date();
+recordDate.setDate(recordDate.getDate());
+recordDate = recordDate.toISOString().slice(0, 10);
+const defaultNcmDate = document.getElementById('NCM_DATE');
+defaultNcmDate.value = recordDate;
 
 let myDueDateDefault = new Date();
 myDueDateDefault.setDate(myDueDateDefault.getDate() + 14);
@@ -16,7 +16,7 @@ const defaultDueDate = document.getElementById('DUE_DATE');
 defaultDueDate.value = myDueDateDefault;
 
 // Send a POST request
-const form = document.querySelector('#entryform');
+const form = document.querySelector('#ncmform');
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const data = new FormData(form);
@@ -28,8 +28,8 @@ form.addEventListener('submit', async (event) => {
     });
     
     const dataJson = {
-        INPUT_ID: nextId,
-        CREATE_DATE: myRequestDate,
+        NCM_ID: nextId,
+        CREATE_DATE: recordDate,
         CREATE_BY: 'TKENT',
         CLOSED: 'N',
     };

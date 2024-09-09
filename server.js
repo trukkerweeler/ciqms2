@@ -4,7 +4,7 @@ const exp = require("constants");
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const port = 3003;
+const port = 3010;
 
 app.use(cors());
 
@@ -16,8 +16,8 @@ app.use((req, res, next) => {
   next();
 });
 
-const inputRoutes = require("./routes/input");
-app.use("/input", inputRoutes);
+const inputRoutes = require("./routes/ncm");
+app.use("/ncm", inputRoutes);
 
 const projectRoutes = require("./routes/project");
 app.use("/project", projectRoutes);

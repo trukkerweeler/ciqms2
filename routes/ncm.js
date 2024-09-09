@@ -25,16 +25,23 @@ router.get('/', (req, res) => {
             }
         // console.log('Connected to DB');
 
-        const query = `select pi.INPUT_ID
-        , pi.INPUT_DATE
-        , pi.SUBJECT
-        , pi.ASSIGNED_TO
-        , pi.PROJECT_ID
-        , pit.INPUT_TEXT
-        , pi.DUE_DATE
-        , pi.CLOSED
-        , pi.CLOSED_DATE 
-        from PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID order by pi.INPUT_ID desc`;
+        const query = `select n.NCM_ID
+        , n.NCM_DATE
+        , n.SUBJECT
+        , n.ASSIGNED_TO
+        , n.DUE_DATE
+        , n.CLOSED
+        , n.CLOSED_DATE
+        , ne.DESCRIPTION
+        , ni.DISPOSITION
+        , nv.VERIFICATION
+        from NONCONFORMANCE n 
+        left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
+        left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
+        left join NCM_VERIFICATION nv on n.NCM_ID = nv.NCM_ID
+        order by n.NCM_ID desc`;
+
+        // from NONCONFORMANCE n left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID order by pi.INPUT_ID desc`;
         // where USER_DEFINED_1 = 'MR'
         
         connection.query(query, (err, rows, fields) => {
@@ -74,10 +81,10 @@ router.get('/nextId', (req, res) => {
             }
         // console.log('Connected to DB');
 
-        const query = 'SELECT CURRENT_ID FROM SYSTEM_IDS where TABLE_NAME = "PEOPLE_INPUT"';
+        const query = 'SELECT CURRENT_ID FROM SYSTEM_IDS where TABLE_NAME = "NONCONFORMANCE"';
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for people input: ' + err);
+                console.log('Failed to query for nonconformance: ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -90,7 +97,7 @@ router.get('/nextId', (req, res) => {
         connection.end();
         });
     } catch (err) {
-        console.log('Error connecting to Db 93');
+        console.log('Error connecting to Db 100');
         return;
     }
 });
@@ -113,26 +120,26 @@ router.post('/', (req, res) => {
             }
         // console.log('Connected to DB');
              
-        const query = `insert into PEOPLE_INPUT (INPUT_ID
-            , INPUT_DATE
+        const query = `insert into NONCONFORMANCE (NCM_ID
+            , NCM_DATE
             , PEOPLE_ID
             , ASSIGNED_TO
             , DUE_DATE
-            , INPUT_TYPE
+            , NCM_TYPE
             , SUBJECT
-            , PROJECT_ID
+            , PRODUCT_ID
             , CLOSED
             , CREATE_DATE
             , CREATE_BY
             ) values (
-                '${req.body.INPUT_ID}'
-                , '${req.body.INPUT_DATE}'
+                '${req.body.NCM_ID}'
+                , '${req.body.NCM_DATE}'
                 , '${req.body.PEOPLE_ID}'
                 , '${req.body.ASSIGNED_TO}'
                 , '${req.body.DUE_DATE}'
-                , '${req.body.INPUT_TYPE}'
+                , '${req.body.NCM_TYPE}'
                 , '${req.body.SUBJECT}'
-                , '${req.body.PROJECT_ID}'
+                , '${req.body.PRODUCT_ID}'
                 , '${req.body.CLOSED}'
                 , '${req.body.CREATE_DATE}'
                 , '${req.body.CREATE_BY}'
@@ -151,21 +158,21 @@ router.post('/', (req, res) => {
 
         
         // escape the apostrophe
-        const inputText = req.body.INPUT_TEXT.replace(/'/g, "\\'");
-        console.log(inputText);
+        const ncmDesc = req.body.DESCRIPTION.replace(/'/g, "\\'");
+        console.log(".post 160: " + ncmDesc);
         // escape the backslash
-        const iid = req.body.INPUT_ID;
-        // const inputText = req.body.INPUT_TEXT.replace(/\\/g, "\\\\");
-        const insertQuery = `insert into PPL_INPT_TEXT values ('${iid}', '${inputText}')`;
+        const nid = req.body.NCM_ID;
+        // const ncmDesc = req.body.DESCRIPTION.replace(/\\/g, "\\\\"); 
+        const insertQuery = `insert into NCM_DESCRIPTION values ('${nid}', '${ncmDesc}')`;
         connection.query(insertQuery, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for PPL_INPT_TEXT insert: ' + err);
+                console.log('Failed to query for NONCONFORMANCE insert: ' + err);
                 res.sendStatus(500);
                 return;
             }
         });
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.INPUT_ID}' WHERE TABLE_NAME = 'PEOPLE_INPUT'`;
+        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.NCM_ID}' WHERE TABLE_NAME = 'NONCONFORMANCE'`;
         connection.query(updateQuery, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for system id update: ' + err);
@@ -178,7 +185,7 @@ router.post('/', (req, res) => {
         });
 
     } catch (err) {
-        console.log('Error connecting to Db (changes 175)');
+        console.log('Error connecting to Db 188');
         return;
     }
 
@@ -253,22 +260,22 @@ router.put('/:id', (req, res) => {
     const myfield = Object.keys (req.body) [2]
     // console.log(myfield);
     switch (myfield) {
-        case 'RESPONSE_TEXT':
+        case 'DESCRIPTION':
             // console.log('Response');
-            mytable = 'PPL_INPT_RSPN';
+            mytable = 'NCM_DESCRIPTION';
             // appended = req.body.RESPONSE_TEXT.replace(/'/g, "\\'");
-            appended = req.body.RESPONSE_TEXT;
+            appended = req.body.DESCRIPTION.replace(/'/g, "/''");
             break;
-        case 'FOLLOWUP_TEXT':
+        case 'DISPOSITION':
             // console.log('Followup');
-            mytable = 'PPL_INPT_FLUP';
-            appended = req.body.FOLLOWUP_TEXT.replace(/'/g, "/''");
+            mytable = 'NCM_DISPOSITION';
+            appended = req.body.DISPOSITION.replace(/'/g, "/''");
             // appended = req.body.FOLLOWUP_TEXT
             break;
-        case 'INPUT_TEXT':
+        case 'VERIFICATION':
             // console.log('Input');
-            mytable = 'PPL_INPT_TEXT';
-            appended = req.body.INPUT_TEXT
+            mytable = 'NCM_VERIFICATION';
+            appended = req.body.VERIFICATION.replace(/'/g, "/''");
             break;
         default:
             console.log('No match');
@@ -312,7 +319,7 @@ router.put('/:id', (req, res) => {
 
 });
 
-// CLOSE THE INPUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// CLOSE THE NCM<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 router.put('/close/:id', (req, res) => {
     // console.log("Params: " + req.params.id);
     // console.log(req.body);
@@ -333,12 +340,12 @@ router.put('/close/:id', (req, res) => {
                 console.error('Error connecting: ' + err.stack);
                 return;
             }
-        const query = `UPDATE PEOPLE_INPUT SET CLOSED = 'Y', CLOSED_DATE = '${req.body.CLOSED_DATE}' WHERE INPUT_ID = '${req.params.id}'`;
+        const query = `UPDATE NONCONFORMANCE SET CLOSED = 'Y', CLOSED_DATE = '${req.body.CLOSED_DATE}' WHERE NCM_ID = '${req.params.id}'`;
         // console.log(query);
 
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for input : ' + err);
+                console.log('Failed to query for nonconformance 346 : ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -348,7 +355,7 @@ router.put('/close/:id', (req, res) => {
         connection.end();
         });
     } catch (err) {
-        console.log('Error connecting to Db 345');
+        console.log('Error connecting to Db 356');
         return;
     }
 
