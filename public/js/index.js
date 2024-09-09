@@ -43,9 +43,9 @@ function getRecords () {
                     if (key.substring(key.length - 4) === 'DATE' && key.length > 0 && record[key] !== null) {
                         td.textContent = record[key].slice(0,10);
                     } else {
-                        if (key == 'INPUT_ID') {
+                        if (key == 'NCM_ID') {
                             // td.innerHTML = `<a href="http://localhost:${NONCONFORMANCE_PORT}/input.html?id=${record[key]}">${record[key]}</a>`;
-                            td.innerHTML = `<a href="http://localhost:3010/input.html?id=${record[key]}">${record[key]}</a>`;
+                            td.innerHTML = `<a href="http://localhost:3010/ncm.html?id=${record[key]}">${record[key]}</a>`;
                         } else {
                             td.textContent = record[key];
                         }

@@ -5,6 +5,7 @@ const url = 'http://localhost:3010/ncm';
 
 let recordDate = new Date();
 recordDate.setDate(recordDate.getDate());
+// let recordDateTime = recordDate
 recordDate = recordDate.toISOString().slice(0, 10);
 const defaultNcmDate = document.getElementById('NCM_DATE');
 defaultNcmDate.value = recordDate;
@@ -29,7 +30,8 @@ form.addEventListener('submit', async (event) => {
     
     const dataJson = {
         NCM_ID: nextId,
-        CREATE_DATE: recordDate,
+        // Create a now date for the record
+        CREATE_DATE: new Date().toISOString(),
         CREATE_BY: 'TKENT',
         CLOSED: 'N',
     };

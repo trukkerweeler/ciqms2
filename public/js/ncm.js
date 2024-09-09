@@ -5,9 +5,10 @@ loadHeaderFooter();
 let queryString = window.location.search;
 let urlParams = new URLSearchParams(queryString);
 let iid = urlParams.get('id');
+console.log(iid);
     
 
-const url = 'http://localhost:3003/ncm/' + iid;
+const url = 'http://localhost:3010/ncm/' + iid;
 
 const main = document.querySelector('main');
 // Delete the child nodes of the main element
@@ -34,20 +35,13 @@ while (main.firstChild) {
             const elemDesc = document.createElement('p');
             const elemFUP = document.createElement('p');
             elemFUP.setAttribute('id', 'followup');
-            const elemIaDate = document.createElement('p');
-            const elemResponse = document.createElement('p');
-            elemResponse.setAttribute('id', 'response');
+            // const elemResponse = document.createElement('p');
+            // elemResponse.setAttribute('id', 'response');
 
-            elemIaDate.setAttribute('class', 'actiondate');
-            const elemCaDate = document.createElement('p');
-            elemCaDate.setAttribute('class', 'actiondate2');
-            const elemCC = document.createElement('p');
             const aiDate = document.createElement('p');
-            aiDate.textContent = 'Request Date:' + ' ' + record[key]['INPUT_DATE'].substring(0, 10);
+            aiDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
             aiDate.setAttribute('class', 'tbl');
-            const caRef = document.createElement('p');
-            caRef.textContent = 'Project:' + ' ' + record[key]['PROJECT_ID'] + ' - ' + record[key]['NAME'];
-            caRef.setAttribute('class', 'tbl');
+
             const aiClosedDate = document.createElement('p');
             if (record[key]['CLOSED_DATE'] === null || record[key]['CLOSED_DATE'] === '' || record[key]['CLOSED_DATE'].length === 0) {
                 aiClosedDate.textContent = 'Closed Date:' + ' ' + '';
@@ -68,7 +62,6 @@ while (main.firstChild) {
                 console.log('recur id is null');
             }
 
-
             aiClosedDate.setAttribute('class', 'tbl');
 
             const caAssTo = document.createElement('p');
@@ -86,50 +79,69 @@ while (main.firstChild) {
                 due_date.textContent = 'Due date:' + ' ' + record[key]['DUE_DATE'].substring(0, 10);
             due_date.setAttribute('class', 'tbl');
 
-            const caType = document.createElement('p');
-            caType.textContent = 'Type:' + ' ' + record[key]['TYPE'];
-            caType.setAttribute('class', 'tbl');
-           
+            const ncmType = document.createElement('p');
+            ncmType.textContent = 'Type:' + ' ' + record[key]['NCM_TYPE'];
+            ncmType.setAttribute('class', 'tbl');   
+            
+            const productId = document.createElement('p');
+            productId.setAttribute('class', 'tbl');
+            if ((record[key]['PRODUCT_ID'] === null) || (record[key]['PRODUCT_ID'] === '') || (record[key]['PRODUCT_ID'] === undefined)) {
+                productId.textContent = 'Product Id:' + '--';
+            }
+            else {
+                productId.textContent = 'Product Id:' + ' ' + record[key]['PRODUCT_ID'];
+            }
+
+            const notesSection = document.createElement('section');
+            notesSection.setAttribute('class', 'notes');
 
             const ncTrendTitle = document.createElement('h3');
             ncTrendTitle.setAttribute('class', 'header3');
-            const followupTitle = document.createElement('h3');
-            followupTitle.setAttribute('class', 'header3');
-            const responseTitle = document.createElement('h3');
-            responseTitle.setAttribute('class', 'header3');
-            const controlTextTitle = document.createElement('h3');
+            const dispositionTitle = document.createElement('h3');
+            dispositionTitle.setAttribute('class', 'header3');
+
+            const verificationTitle = document.createElement('h3');
+            verificationTitle.setAttribute('class', 'header3');
             const linebreak = document.createElement('br');
 
-            elemRpt.textContent = 'Action Item Detail';
+            elemRpt.textContent = 'Nonconformance Detail';
             elemRpt.setAttribute('class', 'header');
-            elemId.textContent = 'Action Id: ' + record[key]['INPUT_ID'];
+            elemId.textContent = 'NCM Id: ' + record[key]['NCM_ID'];
             elemId.setAttribute('class', 'header2');
 
+            detailSection.appendChild(productId);
             detailSection.appendChild(aiDate);
             detailSection.appendChild(caAssTo);
             detailSection.appendChild(aiClosedDate);
-            detailSection.appendChild(caRef);
             detailSection.appendChild(reqBy);
             detailSection.appendChild(due_date);
+            detailSection.appendChild(ncmType);
 
-            ncTrendTitle.textContent = 'Action:';
-            elemDesc.textContent = record[key]['INPUT_TEXT'];
-            elemDesc.setAttribute('id', 'inputtext');
-            // put in double backslashes
-            // elemDesc.textContent = elemDesc.textContent.replace(/\\/g, '\\\\');
+            const divTrend = document.createElement('div');
+            divTrend.setAttribute('class', 'trend');
+            ncTrendTitle.textContent = 'Trend:';
+            divTrend.textContent = record[key]['DESCRIPTION'];
+            divTrend.setAttribute('id', 'inputtext');
+            divTrend.innerHTML = divTrend.innerHTML.replace(/\n/g, '<br>');
+            notesSection.appendChild(ncTrendTitle);
+            notesSection.appendChild(divTrend);
 
-            // replace the line breaks with <br> elements
-            elemDesc.innerHTML = elemDesc.innerHTML.replace(/\n/g, '<br>');            
-            followupTitle.textContent = 'Follow Up:';
-            elemFUP.textContent = record[key]['FOLLOWUP_TEXT'];
+            const divDisposition = document.createElement('div');
+            divDisposition.setAttribute('class', 'disposition');
+            dispositionTitle.textContent = 'Disposition:';
+            divDisposition.textContent = record[key]['DISPOSITION'];
+            divDisposition.innerHTML = divDisposition.innerHTML.replace(/\n/g, '<br>');
+            notesSection.appendChild(dispositionTitle);
+            notesSection.appendChild(divDisposition);
             
-            // replace the line breaks with <br> elements
-            elemFUP.innerHTML = elemFUP.innerHTML.replace(/\n/g, '<br>');
-            responseTitle.textContent = 'Response:';
-            elemResponse.textContent = record[key]['RESPONSE_TEXT'];
-            
-            // replace the line breaks with <br> elements
-            elemResponse.innerHTML = elemResponse.innerHTML.replace(/\n/g, '<br>');
+            const divVerification = document.createElement('div');
+            divVerification.setAttribute('class', 'verification');
+            divVerification.innerHTML = divVerification.innerHTML.replace(/\n/g, '<br>');
+            verificationTitle.textContent = 'Verification:';
+            divVerification.textContent = record[key]['VERIFICATION'];
+            divVerification.innerHTML = divVerification.innerHTML.replace(/\n/g, '<br>');
+            notesSection.appendChild(verificationTitle);
+            notesSection.appendChild(divVerification);
 
             // // Manage the closed checkbox
             // const closed = document.createElement('checkbox');
@@ -140,20 +152,7 @@ while (main.firstChild) {
             main.appendChild(elemRpt);
             main.appendChild(elemId);
             main.appendChild(detailSection);
-
-            detailSection.appendChild(ncTrendTitle);
-            detailSection.appendChild(elemDesc);
-            detailSection.appendChild(followupTitle);
-            detailSection.appendChild(elemFUP);
-            detailSection.appendChild(elemIaDate);
-
-            detailSection.appendChild(responseTitle);
-            detailSection.appendChild(elemResponse);
-
-            detailSection.appendChild(controlTextTitle);
-            detailSection.appendChild(elemCaDate);
-            detailSection.appendChild(elemCC);
-            main.appendChild(detailSection);
+            main.appendChild(notesSection);
         }
     });
     // toggle enable/disable of the edit button

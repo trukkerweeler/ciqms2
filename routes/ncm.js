@@ -29,12 +29,12 @@ router.get('/', (req, res) => {
         , n.NCM_DATE
         , n.SUBJECT
         , n.ASSIGNED_TO
-        , n.DUE_DATE
+        , n.DUE_DATE        
+        , ne.DESCRIPTION
+        , n.DISP_DATE
+        , n.VERIFY_DATE
         , n.CLOSED
         , n.CLOSED_DATE
-        , ne.DESCRIPTION
-        , ni.DISPOSITION
-        , nv.VERIFICATION
         from NONCONFORMANCE n 
         left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
         left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
@@ -211,27 +211,24 @@ router.get('/:id', (req, res) => {
         // console.log('Connected to DB');
 
         const query = `SELECT 
-        pi.INPUT_ID
-        , pi.PEOPLE_ID
-        , pi.PROJECT_ID
-        , INPUT_DATE
-        , pi.DUE_DATE
-        , pi.ASSIGNED_TO
-        , INPUT_TYPE
-        , pi.SUBJECT
-        , pi.CLOSED
-        , pi.CLOSED_DATE
-        , pit.INPUT_TEXT
-        , pir.RESPONSE_TEXT
-        , pif.FOLLOWUP_TEXT 
-        , p.NAME
-        , pirc.RECUR_ID
-        FROM quality.PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID
-        left join PPL_INPT_FLUP pif on pi.INPUT_ID = pif.INPUT_ID
-        left join PPL_INPT_RSPN pir on pi.INPUT_ID = pir.INPUT_ID 
-        left join PROJECT p on pi.PROJECT_ID = p.PROJECT_ID
-        left join PPL_INPT_RCUR pirc on pi.USER_DEFINED_2 = pirc.RECUR_ID
-        where pi.INPUT_ID = '${req.params.id}'`;
+        n.NCM_ID
+        , n.PEOPLE_ID
+        , NCM_DATE
+        , n.DUE_DATE
+        , n.ASSIGNED_TO
+        , NCM_TYPE
+        , n.SUBJECT
+        , n.CLOSED
+        , n.CLOSED_DATE
+        , n.PRODUCT_ID
+        , ne.DESCRIPTION
+        , ni.DISPOSITION
+        , nv.VERIFICATION
+        FROM quality.NONCONFORMANCE n 
+        left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
+        left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
+        left join NCM_VERIFICATION nv on n.NCM_ID = nv.NCM_ID 
+        where n.NCM_ID = '${req.params.id}'`;
 
         // console.log(query);
 
