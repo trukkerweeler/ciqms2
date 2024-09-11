@@ -20,21 +20,34 @@
         <button type="submit" id="editaction">Append</button>
         <button type="submit" id="closeaction">Close</button>
     </form> -->
-    <div id="stamp">
-        <div id="doit"></div>
-        <p id="inspectiondate">DATE:</p>
-    </div>
-    <dialog data-modal>
-        <div>Append field - choose field:</div>
-        <form class="appendmodal">
-            <select name="fieldname" id="fieldname">
-                <option value="FOLLOWUP_TEXT" selected>Follow up</option>
-                <option value="RESPONSE_TEXT" selected>Response</option>
-            </select><input type="textarea" id="newtext">
-            <button type="submit" formmethod="dialog">Cancel</button>
-            <button id="modalsave" type="submit">Save</button>
+    <dialog id="trendDialog" class="editDialog">
+        <div class="dialogTitle">Edit Trend</div>
+        <form class="edittrend">
+            <textarea type="textarea" id="newtextTrend" class="notestext" rows="4" cols="40"></textarea>
+            <button class="btnDialog" id="cancelTrend" type="submit" formmethod="dialog">Cancel</button>
+            <button class="btnDialog dialogSaveBtn" id="savetrend" type="submit">Save</button>
         </form>
-        <button data-close-modal>Close</button>
+        <button id="btnCloseEditTrend" class="closedialog">Close</button>
+    </dialog>
+    <dialog id="dispDialog" class="editDialog">
+
+        <div class="dialogTitle">Edit Disposition</div>
+        <form class="editdisp">
+            <textarea type="textarea" id="newtextDisp" class="notestext" rows="4" cols="40"></textarea>
+            <button class="btnDialog" id="cancelDisp" type="submit" formmethod="dialog">Cancel</button>
+            <button class="btnDialog dialogSaveBtn" id="saveDisp" type="submit">Save</button>
+        </form>
+        <button id="btnCloseEditDisp" class="closedialog">Close</button>
+    </dialog>
+    <dialog id="verfDialog" class="editDialog">
+
+        <div class="dialogTitle">Edit Verification</div>
+        <form class="editverf">
+            <textarea type="textarea" id="newtextVerf" class="notestext" rows="4" cols="40"></textarea>
+            <button class="btnDialog" id="cancelVerf" type="submit" formmethod="dialog">Cancel</button>
+            <button class="btnDialog dialogSaveBtn" id="saveVerf" type="submit">Save</button>
+        </form>
+        <button id="btnCloseEditVerf" class="closedialog">Close</button>
     </dialog>
 
     <main id="main">

@@ -5,6 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
+let test = true;
 
 
 // ==================================================
@@ -252,25 +253,23 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
     // console.log("Params: " + req.params.id);
     // console.log(req.body);
+    test = true;
     let mytable = '';
     let appended = '';
     const myfield = Object.keys (req.body) [2]
-    // console.log(myfield);
+    if (test) {
+        console.log("My field: " + myfield);
+    }
     switch (myfield) {
         case 'DESCRIPTION':
-            // console.log('Response');
             mytable = 'NCM_DESCRIPTION';
-            // appended = req.body.RESPONSE_TEXT.replace(/'/g, "\\'");
             appended = req.body.DESCRIPTION.replace(/'/g, "/''");
             break;
         case 'DISPOSITION':
-            // console.log('Followup');
             mytable = 'NCM_DISPOSITION';
             appended = req.body.DISPOSITION.replace(/'/g, "/''");
-            // appended = req.body.FOLLOWUP_TEXT
             break;
         case 'VERIFICATION':
-            // console.log('Input');
             mytable = 'NCM_VERIFICATION';
             appended = req.body.VERIFICATION.replace(/'/g, "/''");
             break;
@@ -295,12 +294,14 @@ router.put('/:id', (req, res) => {
         // console.log('Connected to DB');
         // console.log(req.body);
         const query = `REPLACE INTO ${mytable} SET 
-        INPUT_ID = '${req.params.id}',
+        NCM_ID = '${req.params.id}',
         ${myfield} = '${appended}'`;
-        // console.log(query);
+        if (test) {
+            console.log(query);
+        }
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for input : ' + err);
+                console.log('Failed to query for nonconformance : ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -310,7 +311,7 @@ router.put('/:id', (req, res) => {
         connection.end();
         });
     } catch (err) {
-        console.log('Error connecting to Db 83');
+        console.log('Error connecting to Db 318');
         return;
     }
 

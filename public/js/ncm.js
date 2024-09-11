@@ -1,11 +1,16 @@
-import { loadHeaderFooter } from './utils.mjs';
+import { loadHeaderFooter, getUserValue } from './utils.mjs';
 loadHeaderFooter();
+const user = await getUserValue();
+
+const test = true
 
 // Get the project id from the url params
 let queryString = window.location.search;
 let urlParams = new URLSearchParams(queryString);
 let iid = urlParams.get('id');
-console.log(iid);
+if (test) {
+    console.log(iid);
+    }
     
 
 const url = 'http://localhost:3010/ncm/' + iid;
@@ -13,10 +18,7 @@ const url = 'http://localhost:3010/ncm/' + iid;
 const main = document.querySelector('main');
 // Delete the child nodes of the main element
 while (main.firstChild) {
-    // if (main.firstChild.nodeName === 'section') {
         main.removeChild(main.firstChild);
-        // section.remove();
-    // }
 }
 
     // // enable the close button
@@ -35,8 +37,6 @@ while (main.firstChild) {
             const elemDesc = document.createElement('p');
             const elemFUP = document.createElement('p');
             elemFUP.setAttribute('id', 'followup');
-            // const elemResponse = document.createElement('p');
-            // elemResponse.setAttribute('id', 'response');
 
             const aiDate = document.createElement('p');
             aiDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
@@ -45,21 +45,14 @@ while (main.firstChild) {
             const aiClosedDate = document.createElement('p');
             if (record[key]['CLOSED_DATE'] === null || record[key]['CLOSED_DATE'] === '' || record[key]['CLOSED_DATE'].length === 0) {
                 aiClosedDate.textContent = 'Closed Date:' + ' ' + '';
-                console.log('closed date is null');
+                if (test) {
+                    console.log('closed date is null');
+                }
             } else {
                 aiClosedDate.textContent = 'Closed Date:' + ' ' + record[key]['CLOSED_DATE'].substring(0, 10);
                 // enable the closebutton
                 // closebutton.disabled = true;
                 console.log('closed date is NOT null');
-            }
-            // toggle display of doit if recur id is not null
-            const doit = document.querySelector('#doit');
-            if (record[key]['RECUR_ID'] !== null) {
-                doit.style.display = 'block';
-                console.log('recur id is not null');
-            } else {
-                doit.style.display = 'none';
-                console.log('recur id is null');
             }
 
             aiClosedDate.setAttribute('class', 'tbl');
@@ -93,21 +86,46 @@ while (main.firstChild) {
             }
 
             const notesSection = document.createElement('section');
-            notesSection.setAttribute('class', 'notes');
+            notesSection.setAttribute('class', 'notesgrid');
 
             const ncTrendTitle = document.createElement('h3');
             ncTrendTitle.setAttribute('class', 'header3');
+            ncTrendTitle.setAttribute('id', 'trendTitle');
+            
+            const btnEditTrend = document.createElement('button');
+            btnEditTrend.setAttribute('class', 'btn');
+            btnEditTrend.setAttribute('class', 'btnEditNotes');
+            btnEditTrend.setAttribute('id', 'btnEditTrend');
+            btnEditTrend.setAttribute('type', 'submit');
+            btnEditTrend.textContent = 'Edit Desc.';
+            
             const dispositionTitle = document.createElement('h3');
             dispositionTitle.setAttribute('class', 'header3');
+            
+            const btnEditDisposition = document.createElement('button');
+            btnEditDisposition.setAttribute('class', 'btn');
+            btnEditDisposition.setAttribute('class', 'btnEditNotes');
+            btnEditDisposition.setAttribute('id', 'btnEditDisp');
+            btnEditDisposition.textContent = 'Edit Disp.';
 
             const verificationTitle = document.createElement('h3');
             verificationTitle.setAttribute('class', 'header3');
+
+            const btnEditVerf = document.createElement('button');
+            btnEditVerf.setAttribute('class', 'btn');
+            btnEditVerf.setAttribute('class', 'btnEditNotes');
+            btnEditVerf.setAttribute('id', 'btnEditVerf');
+            btnEditVerf.textContent = 'Edit Verf.';
+            
+
             const linebreak = document.createElement('br');
+
 
             elemRpt.textContent = 'Nonconformance Detail';
             elemRpt.setAttribute('class', 'header');
             elemId.textContent = 'NCM Id: ' + record[key]['NCM_ID'];
             elemId.setAttribute('class', 'header2');
+            elemId.setAttribute('id', 'nid');
 
             detailSection.appendChild(productId);
             detailSection.appendChild(aiDate);
@@ -118,30 +136,47 @@ while (main.firstChild) {
             detailSection.appendChild(ncmType);
 
             const divTrend = document.createElement('div');
-            divTrend.setAttribute('class', 'trend');
-            ncTrendTitle.textContent = 'Trend:';
+            divTrend.setAttribute('class', 'notes');
+            ncTrendTitle.textContent = 'Description:';
             divTrend.textContent = record[key]['DESCRIPTION'];
             divTrend.setAttribute('id', 'inputtext');
             divTrend.innerHTML = divTrend.innerHTML.replace(/\n/g, '<br>');
             notesSection.appendChild(ncTrendTitle);
             notesSection.appendChild(divTrend);
+            notesSection.appendChild(btnEditTrend);
 
             const divDisposition = document.createElement('div');
             divDisposition.setAttribute('class', 'disposition');
+            divDisposition.setAttribute('class', 'notes');
+            divDisposition.setAttribute('id', 'disptext');
             dispositionTitle.textContent = 'Disposition:';
-            divDisposition.textContent = record[key]['DISPOSITION'];
-            divDisposition.innerHTML = divDisposition.innerHTML.replace(/\n/g, '<br>');
+            dispositionTitle.setAttribute('id', 'dispTitle');
+            if ((record[key]['DISPOSITION'] === null) || (record[key]['DISPOSITION'] === '') || (record[key]['DISPOSITION'] === undefined)) {
+                divDisposition.innerHTML = '<br>';
+            } else {
+                divDisposition.textContent = record[key]['DISPOSITION'];
+                divDisposition.innerHTML = divDisposition.innerHTML.replace(/\n/g, '<br>');
+            }
             notesSection.appendChild(dispositionTitle);
             notesSection.appendChild(divDisposition);
+            notesSection.appendChild(btnEditDisposition);
             
             const divVerification = document.createElement('div');
             divVerification.setAttribute('class', 'verification');
-            divVerification.innerHTML = divVerification.innerHTML.replace(/\n/g, '<br>');
+            divVerification.setAttribute('class', 'notes');
+            divVerification.setAttribute('id', 'verftext');
             verificationTitle.textContent = 'Verification:';
-            divVerification.textContent = record[key]['VERIFICATION'];
+            verificationTitle.setAttribute('id', 'verificationTitle');
             divVerification.innerHTML = divVerification.innerHTML.replace(/\n/g, '<br>');
+            if ((record[key]['VERIFICATION'] === null) || (record[key]['VERIFICATION'] === '') || (record[key]['VERIFICATION'] === undefined)) {
+                divVerification.innerHTML = '<br>';
+            } else {
+                divVerification.textContent = record[key]['VERIFICATION'];
+                divVerification.innerHTML = divVerification.innerHTML.replace(/\n/g, '<br>');
+            }            
             notesSection.appendChild(verificationTitle);
             notesSection.appendChild(divVerification);
+            notesSection.appendChild(btnEditVerf);
 
             // // Manage the closed checkbox
             // const closed = document.createElement('checkbox');
@@ -154,7 +189,158 @@ while (main.firstChild) {
             main.appendChild(detailSection);
             main.appendChild(notesSection);
         }
+
+        // =============================================
+        // Listen for the btnEditTrend button click
+        const btnEditTrend = document.querySelector('#btnEditTrend');
+        btnEditTrend.addEventListener('click', async (event) => {
+            // prvent the default action
+            event.preventDefault();
+            // show the trend dialog
+            const trendDialog = document.querySelector('#trendDialog');
+            trendDialog.showModal();
+        });
+
+    // Listen for the btnEditDisposition button click
+    const btnEditDisposition = document.querySelector('#btnEditDisp');
+    btnEditDisposition.addEventListener('click', async (event) => {
+        // prvent the default action
+        event.preventDefault();
+        // show the trend dialog
+        const dispositionDialog = document.querySelector('#dispDialog');
+        dispositionDialog.showModal();
+    }
+    );
+
+    // =============================================
+    // Listen for the btnEditVerf button click
+    const btnEditVerf = document.querySelector('#btnEditVerf');
+    btnEditVerf.addEventListener('click', async (event) => {
+        // prvent the default action
+        event.preventDefault();
+        // show the trend dialog
+        const verfDialog = document.querySelector('#verfDialog');
+        verfDialog.showModal();
+    }
+    );
+
+
+    // =============================================
+    // Listen for click on close dialog button class
+    const closedialog = document.querySelectorAll('.closedialog');
+    closedialog.forEach((element) => {
+        element.addEventListener('click', async (event) => {
+            // prevent the default action
+            event.preventDefault();
+            // close the dialog
+            const dialog = element.closest('dialog');
+            dialog.close();
+        });        
     });
-    // toggle enable/disable of the edit button
-    // editbutton.disabled = false;
-    // closebutton.disabled = true;
+
+    // // =============================================
+    // // Listen for the saveNotes button class
+    const saveNotes = document.querySelectorAll('.dialogSaveBtn');
+    saveNotes.forEach((element) => {
+        element.addEventListener('click', async (event) => {
+            // prevent the default action
+            event.preventDefault();
+            // get the clicked button id
+            // get the input id
+            const nid = document.querySelector('#nid');
+            let nidValue = iid;
+            // if (nidValue.length === 0) {
+            //     alert('Please enter the Input ID');
+            // } else {
+            //     while (nidValue.length < 7) {
+            //         nidValue = '0' + nidValue;
+            //     }
+            // }
+
+            const fieldname = event.target.id;
+
+            if (test) {
+                console.log(fieldname);
+                console.log(nidValue);
+                }
+            
+            let data = {
+                NCM_ID: nidValue,
+                INPUT_USER: getUserValue(),
+            };
+            // console.log(data);
+    
+            let compositetext = '';
+            const d = new Date();
+            const date = d.toISOString().substring(0, 10);
+            const time = d.toLocaleTimeString();
+            const mydate = date + ' ' + time;
+    
+            switch (fieldname) {
+                case 'savetrend':
+                    // console.log('input text');
+                    let previoustext = document.querySelector('#inputtext').innerHTML;
+                    let newtextTrend = document.querySelector('#newtextTrend').value;
+                    if (length(newtextTrend) === 0) {
+                        alert('Not saving, no trend text.');
+                        break
+                    } else {
+
+                    let compositetext = user + " - " + mydate + "<br>" + document.querySelector('#newtextTrend').value  + "<br><br>" + previoustext;
+                    data = { ...data, DESCRIPTION: compositetext}
+                    data = { ...data, MY_TABLE: 'NCM_DESCRIPTION'}
+                    }
+                    break;
+
+                case 'saveDisp':
+                    // console.log('followup text');
+                    let previoustext2 = document.querySelector('#disptext').innerHTML;
+                    let newtextDisp = document.querySelector('#newtextDisp').value;
+                    if (newtextDisp.length === 0) {
+                        alert('Not saving, no disposition text.');
+                        break;
+                    } else {
+                    let compositetext2 = user + " - " + mydate + "<br>" + document.querySelector('#newtextDisp').value + "<br><br>" + previoustext2;
+                    data = { ...data, DISPOSITION: compositetext2}
+                    data = { ...data, MY_TABLE: 'NCM_DISPOSITION'}
+                    }
+                    break;
+
+                case 'saveVerf':
+                    let previoustext3 = document.querySelector('#verftext').innerHTML;
+                    let newtextVerf = document.querySelector('#newtextVerf').value;
+                    if (newtextVerf.length === 0) {
+                        alert('Not saving, no verification text.');
+                        break;
+                    } else {
+                        let compositetext3 = user + " - " + mydate + "<br>" + document.querySelector('#newtextVerf').value + "<br><br>" + previoustext3;
+                        data = { ...data, VERIFICATION: compositetext3}
+                        data = { ...data, MY_TABLE: 'NCM_VERIFICATION'}
+                    }                    
+                    break;
+                
+                default:
+                    console.log('default');
+            }
+    
+            if (test) {
+                console.log(data);
+            }
+    
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            };
+    
+            const response = await fetch(url, options);
+            const json = await response.json();
+            // searchbutton.click();  
+            trendDialog.close();
+            // refresh the page
+            window.location.reload();
+        });             
+        });
+    });
