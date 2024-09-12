@@ -31,16 +31,15 @@ while (main.firstChild) {
         for (const key in record) {
             const detailSection = document.createElement('section');
             detailSection.setAttribute('class', 'section');
+            detailSection.setAttribute('id', 'detailSection');
             const elemRpt = document.createElement('h1');
             const elemId = document.createElement('h2');
+            const detailHeading = document.createElement('h3');
+            detailHeading.textContent = 'Detail';
             
-            const elemDesc = document.createElement('p');
-            const elemFUP = document.createElement('p');
-            elemFUP.setAttribute('id', 'followup');
-
-            const aiDate = document.createElement('p');
-            aiDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
-            aiDate.setAttribute('class', 'tbl');
+            const ncmDate = document.createElement('p');
+            ncmDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
+            ncmDate.setAttribute('class', 'tbl');
 
             const aiClosedDate = document.createElement('p');
             if (record[key]['CLOSED_DATE'] === null || record[key]['CLOSED_DATE'] === '' || record[key]['CLOSED_DATE'].length === 0) {
@@ -85,12 +84,43 @@ while (main.firstChild) {
                 productId.textContent = 'Product Id:' + ' ' + record[key]['PRODUCT_ID'];
             }
 
+            const lotNumber = document.createElement('p');
+            lotNumber.setAttribute('class', 'tbl');
+            lotNumber.setAttribute('id', 'lotNumber');
+            if ((record[key]['LOT_NUMBER'] === null) || (record[key]['LOT_NUMBER'] === '') || (record[key]['LOT_NUMBER'] === undefined)) {
+                lotNumber.textContent = 'Lot Number:' + '--';
+            }
+            else {
+                lotNumber.textContent = 'Lot Number:' + ' ' + record[key]['LOT_NUMBER'];
+            }
+
+            const lotQty = document.createElement('p');
+            lotQty.setAttribute('class', 'tbl');
+            lotQty.setAttribute('id', 'lotQty');
+            if ((record[key]['LOT_SIZE'] === null) || (record[key]['LOT_SIZE'] === '') || (record[key]['LOT_SIZE'] === undefined)) {
+                lotQty.textContent = 'Lot Qty:' + '';
+            }
+            else {
+                lotQty.textContent = 'Lot Qty:' + ' ' + record[key]['LOT_SIZE'];
+            }
+            
+            const rmaId = document.createElement('p');
+            rmaId.textContent = 'RMA Id:' + ' ' + record[key]['USER_DEFINED_1'];
+            rmaId.setAttribute('class', 'tbl');
+            if ((record[key]['USER_DEFINED_1'] === null) || (record[key]['USER_DEFINED_1'] === '') || (record[key]['USER_DEFINED_1'] === undefined)) {
+                rmaId.textContent = 'RMA Id:' + '--';
+            } else {
+                rmaId.textContent = 'RMA Id:' + ' ' + record[key]['USER_DEFINED_1'];
+            }
+
+
             const notesSection = document.createElement('section');
             notesSection.setAttribute('class', 'notesgrid');
+            notesSection.setAttribute('id', 'notesSection');
 
-            const ncTrendTitle = document.createElement('h3');
-            ncTrendTitle.setAttribute('class', 'header3');
-            ncTrendTitle.setAttribute('id', 'trendTitle');
+            const ncDescTitle = document.createElement('h3');
+            ncDescTitle.setAttribute('class', 'header3');
+            ncDescTitle.setAttribute('id', 'trendTitle');
             
             const btnEditTrend = document.createElement('button');
             btnEditTrend.setAttribute('class', 'btn');
@@ -115,34 +145,36 @@ while (main.firstChild) {
             btnEditVerf.setAttribute('class', 'btn');
             btnEditVerf.setAttribute('class', 'btnEditNotes');
             btnEditVerf.setAttribute('id', 'btnEditVerf');
-            btnEditVerf.textContent = 'Edit Verf.';
-            
+            btnEditVerf.textContent = 'Edit Verf.';            
 
             const linebreak = document.createElement('br');
-
 
             elemRpt.textContent = 'Nonconformance Detail';
             elemRpt.setAttribute('class', 'header');
             elemId.textContent = 'NCM Id: ' + record[key]['NCM_ID'];
             elemId.setAttribute('class', 'header2');
             elemId.setAttribute('id', 'nid');
-
+            
+            detailSection.appendChild(detailHeading);
             detailSection.appendChild(productId);
-            detailSection.appendChild(aiDate);
+            detailSection.appendChild(ncmDate);
             detailSection.appendChild(caAssTo);
             detailSection.appendChild(aiClosedDate);
             detailSection.appendChild(reqBy);
             detailSection.appendChild(due_date);
             detailSection.appendChild(ncmType);
+            detailSection.appendChild(lotNumber);
+            detailSection.appendChild(lotQty);
+            detailSection.appendChild(rmaId);
 
-            const divTrend = document.createElement('div');
-            divTrend.setAttribute('class', 'notes');
-            ncTrendTitle.textContent = 'Description:';
-            divTrend.textContent = record[key]['DESCRIPTION'];
-            divTrend.setAttribute('id', 'inputtext');
-            divTrend.innerHTML = divTrend.innerHTML.replace(/\n/g, '<br>');
-            notesSection.appendChild(ncTrendTitle);
-            notesSection.appendChild(divTrend);
+            const divDesc = document.createElement('div');
+            divDesc.setAttribute('class', 'notes');
+            ncDescTitle.textContent = 'Description:';
+            divDesc.textContent = record[key]['DESCRIPTION'];
+            divDesc.setAttribute('id', 'inputtext');
+            divDesc.innerHTML = divDesc.innerHTML.replace(/\n/g, '<br>');
+            notesSection.appendChild(ncDescTitle);
+            notesSection.appendChild(divDesc);
             notesSection.appendChild(btnEditTrend);
 
             const divDisposition = document.createElement('div');

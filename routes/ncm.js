@@ -129,6 +129,9 @@ router.post('/', (req, res) => {
             , NCM_TYPE
             , SUBJECT
             , PRODUCT_ID
+            , LOT_SIZE
+            , LOT_NUMBER
+            , USER_DEFINED_1
             , CLOSED
             , CREATE_DATE
             , CREATE_BY
@@ -141,6 +144,9 @@ router.post('/', (req, res) => {
                 , '${req.body.NCM_TYPE}'
                 , '${req.body.SUBJECT}'
                 , '${req.body.PRODUCT_ID}'
+                , '${req.body.LOT_SIZE}'
+                , '${req.body.LOT_NUMBER}'
+                , '${req.body.USER_DEFINED_1}'
                 , '${req.body.CLOSED}'
                 , '${req.body.CREATE_DATE}'
                 , '${req.body.CREATE_BY}'
@@ -222,6 +228,9 @@ router.get('/:id', (req, res) => {
         , n.CLOSED
         , n.CLOSED_DATE
         , n.PRODUCT_ID
+        , n.LOT_SIZE
+        , n.LOT_NUMBER
+        , n.USER_DEFINED_1
         , ne.DESCRIPTION
         , ni.DISPOSITION
         , nv.VERIFICATION
