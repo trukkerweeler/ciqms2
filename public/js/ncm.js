@@ -35,7 +35,15 @@ while (main.firstChild) {
             const elemRpt = document.createElement('h1');
             const elemId = document.createElement('h2');
             const detailHeading = document.createElement('h3');
+            detailHeading.setAttribute('id', 'detailTitle');
             detailHeading.textContent = 'Detail';
+
+            const btnEditDetail = document.createElement('button');
+            btnEditDetail.setAttribute('class', 'btn');
+            btnEditDetail.setAttribute('class', 'btnEditNotes');
+            btnEditDetail.textContent = 'Edit Detail';
+            btnEditDetail.setAttribute('id', 'btnEditDetail');
+            btnEditDetail.setAttribute('type', 'submit');
             
             const ncmDate = document.createElement('p');
             ncmDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
@@ -122,12 +130,12 @@ while (main.firstChild) {
             ncDescTitle.setAttribute('class', 'header3');
             ncDescTitle.setAttribute('id', 'trendTitle');
             
-            const btnEditTrend = document.createElement('button');
-            btnEditTrend.setAttribute('class', 'btn');
-            btnEditTrend.setAttribute('class', 'btnEditNotes');
-            btnEditTrend.setAttribute('id', 'btnEditTrend');
-            btnEditTrend.setAttribute('type', 'submit');
-            btnEditTrend.textContent = 'Edit Desc.';
+            const btnEditDesc = document.createElement('button');
+            btnEditDesc.setAttribute('class', 'btn');
+            btnEditDesc.setAttribute('class', 'btnEditNotes');
+            btnEditDesc.setAttribute('id', 'btnEditDesc');
+            btnEditDesc.setAttribute('type', 'submit');
+            btnEditDesc.textContent = 'Edit Desc.';
             
             const dispositionTitle = document.createElement('h3');
             dispositionTitle.setAttribute('class', 'header3');
@@ -156,6 +164,7 @@ while (main.firstChild) {
             elemId.setAttribute('id', 'nid');
             
             detailSection.appendChild(detailHeading);
+            detailSection.appendChild(btnEditDetail);
             detailSection.appendChild(productId);
             detailSection.appendChild(ncmDate);
             detailSection.appendChild(caAssTo);
@@ -175,7 +184,7 @@ while (main.firstChild) {
             divDesc.innerHTML = divDesc.innerHTML.replace(/\n/g, '<br>');
             notesSection.appendChild(ncDescTitle);
             notesSection.appendChild(divDesc);
-            notesSection.appendChild(btnEditTrend);
+            notesSection.appendChild(btnEditDesc);
 
             const divDisposition = document.createElement('div');
             divDisposition.setAttribute('class', 'disposition');
@@ -222,16 +231,16 @@ while (main.firstChild) {
             main.appendChild(notesSection);
         }
 
-        // =============================================
-        // Listen for the btnEditTrend button click
-        const btnEditTrend = document.querySelector('#btnEditTrend');
-        btnEditTrend.addEventListener('click', async (event) => {
-            // prvent the default action
-            event.preventDefault();
-            // show the trend dialog
-            const trendDialog = document.querySelector('#trendDialog');
-            trendDialog.showModal();
-        });
+    // =============================================
+    // Listen for the btnEditDesc button click
+    const btnEditDesc = document.querySelector('#btnEditDesc');
+    btnEditDesc.addEventListener('click', async (event) => {
+        // prvent the default action
+        event.preventDefault();
+        // show the trend dialog
+        const trendDialog = document.querySelector('#trendDialog');
+        trendDialog.showModal();
+    });
 
     // Listen for the btnEditDisposition button click
     const btnEditDisposition = document.querySelector('#btnEditDisp');
@@ -253,6 +262,18 @@ while (main.firstChild) {
         // show the trend dialog
         const verfDialog = document.querySelector('#verfDialog');
         verfDialog.showModal();
+    }
+    );
+
+    // =============================================
+    // Listen for the btnEditDetail button click
+    const btnEditDetail = document.querySelector('#btnEditDetail');
+    btnEditDetail.addEventListener('click', async (event) => {
+        // prvent the default action
+        event.preventDefault();
+        // show the detail dialog
+        const detailDialog = document.querySelector('#detailDialog');
+        detailDialog.showModal();
     }
     );
 
@@ -373,6 +394,137 @@ while (main.firstChild) {
             trendDialog.close();
             // refresh the page
             window.location.reload();
-        });             
         });
+
+        });
+
+    // =============================================
+    // Listen for the editDetail button 
+    const editDetail = document.querySelector('#btnEditDetail');
+    editDetail.addEventListener('click', async (event) => {
+        const detailDialog = document.querySelector('#detailDialog');
+        const detailDialogForm = document.querySelector('#detailDialogForm');
+        const label = document.createElement('label');
+        // prevent the default action
+        event.preventDefault();
+
+        // Clear the dialog
+        while (detailDialog.firstChild) {
+            detailDialog.removeChild(detailDialog.firstChild);
+        }
+
+        for (const key in record) {
+            for (const field in record[key]) {
+                 if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1'].includes (field)) {
+                // console.log(field);
+                const fieldDesc = document.createElement('label');
+                fieldDesc.textContent = field;
+                detailDialog.appendChild(fieldDesc);
+                const formfield = document.createElement('input');
+                formfield.setAttribute('type', 'text');
+                formfield.setAttribute('id', field);
+                formfield.setAttribute('class', 'field');
+                formfield.setAttribute('class', 'detailedit');
+                formfield.setAttribute('value', record[key][field]);
+                detailDialog.appendChild(formfield);
+             }           
+            };
+            // add closed field
+            // const closed = document.createElement('label');
+            // closed.textContent = 'Closed';
+            // detailDialog.appendChild(closed);
+
+            // const closedfield = document.createElement('input');
+            // closedfield.setAttribute('type', 'checkbox');
+            // closedfield.setAttribute('id', 'CLOSED');
+            // closedfield.setAttribute('class', 'field');
+            // closedfield.setAttribute('class', 'detailedit');
+            // if (record[key]['CLOSED'] === 'Y') {
+            //     closedfield.checked = true;
+            //     closedfield.setAttribute('value', 'Y');
+            // } else {
+            //     closedfield.checked = false;
+            //     closedfield.setAttribute('value', 'N');
+            // }
+
+            // detailDialog.appendChild(closedfield);
+
+            const saveDetail = document.createElement('button');
+            saveDetail.textContent = 'Save';
+            saveDetail.setAttribute('class', 'btn');
+            saveDetail.setAttribute('class', 'dialogSaveBtn');
+            saveDetail.setAttribute('id', 'saveDetail');
+            detailDialog.appendChild(saveDetail);
+
+            const closeDetail = document.createElement('button');
+            closeDetail.textContent = 'Close';
+            closeDetail.setAttribute('class', 'btn');
+            closeDetail.setAttribute('class', 'closedialog');
+            closeDetail.setAttribute('id', 'closeDetail');
+            detailDialog.appendChild(closeDetail);
+
+        }     
+
+        // show the detail dialog
+        detailDialog.showModal();
+
+        // Listen for the saveDetail button click
+        const saveDetail = document.querySelector('#saveDetail');
+        const detailsUrl = 'http://localhost:3010/ncm/details/' + iid
+        saveDetail.addEventListener('click', async (event) => {
+            // prevent the default action
+            event.preventDefault();
+            // get the input id
+            const nid = document.querySelector('#nid');
+            let nidValue = iid;
+
+            let data = {
+                NCM_ID: nidValue,
+                INPUT_USER: getUserValue(),
+            };
+
+            for (const key in record) {
+                for (const field in record[key]) {
+                    if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1', 'CLOSED'].includes (field)) {
+                        const fieldname = field;
+                        const fieldvalue = document.querySelector('#' + field).value;
+                        data = { ...data, [fieldname]: fieldvalue}
+                    }
+                }
+            }
+
+            if (test) {
+                console.log(data);
+            }
+
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            };
+
+            const response = await fetch(detailsUrl, options);
+            const json = await response.json();
+            // searchbutton.click();  
+            detailDialog.close();
+            // refresh the page
+            window.location.reload();
+        });
+
+
+        // =============================================
+        // Listen for the close button click
+        const closebutton = document.querySelector('#closeDetail');
+        closebutton.addEventListener('click', async (event) => {
+            // prevent the default action
+            event.preventDefault();
+            // close the detailDialog
+            const detailDialog = document.querySelector('#detailDialog');
+            detailDialog.close();
+        });
+
+    });
+
     });

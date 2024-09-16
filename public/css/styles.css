@@ -127,7 +127,7 @@ section p {
     margin-bottom: 0;
 }
 
-#btnEditTrend, #trendTitle {
+#btnEditDesc, #trendTitle {
     grid-row: 1;
 }
 #btnEditDisp, #dispTitle {
@@ -147,15 +147,28 @@ section p {
     font-weight: 300;
     font-size: small;
     height: 20px;
-    /* margin-top: 2px; */
     padding-top: 3px;
+    margin-bottom: 2px;
 }
 
-#trendTitle {
+#trendTitle, #detailTitle {
     grid-column: span 2;
 }
+
 .editDialog {
     width: 400px;
+}
+
+#detailDialog {
+    width: 400px;
+    font-size: small;
+    /* display: none; */
+}
+.detailedit {
+    font-size: small;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
 }
 #dispTitle {
     grid-column: span 2;

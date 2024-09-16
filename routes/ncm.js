@@ -31,11 +31,11 @@ router.get('/', (req, res) => {
         , n.SUBJECT
         , n.ASSIGNED_TO
         , n.DUE_DATE        
+        , n.PRODUCT_ID
         , ne.DESCRIPTION
         , n.DISP_DATE
         , n.VERIFY_DATE
         , n.CLOSED
-        , n.CLOSED_DATE
         from NONCONFORMANCE n 
         left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
         left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
@@ -321,6 +321,61 @@ router.put('/:id', (req, res) => {
         });
     } catch (err) {
         console.log('Error connecting to Db 318');
+        return;
+    }
+
+});
+
+// ==================================================
+// Update details
+router.put('/details/:id', (req, res) => {
+    // console.log("Params: " + req.params.id);
+    // console.log(req.body);
+    let mytable = '';
+    let appended = '';
+    const myfield = Object.keys (req.body) [1]
+    
+    try {
+        const connection = mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            port: 3306,
+            database: 'quality'
+        });
+        connection.connect(function(err) {
+            if (err) {
+                console.error('Error connecting: ' + err.stack);
+                return;
+            }
+        const query = `UPDATE NONCONFORMANCE SET 
+        NCM_DATE = '${req.body.NCM_DATE}',
+        DUE_DATE = '${req.body.DUE_DATE}',
+        PEOPLE_ID = '${req.body.PEOPLE_ID}',
+        ASSIGNED_TO = '${req.body.ASSIGNED_TO}',
+        NCM_TYPE = '${req.body.NCM_TYPE}',
+        SUBJECT = '${req.body.SUBJECT}',
+        PRODUCT_ID = '${req.body.PRODUCT_ID}',
+        LOT_SIZE = '${req.body.LOT_SIZE}',
+        LOT_NUMBER = '${req.body.LOT_NUMBER}',
+        USER_DEFINED_1 = '${req.body.USER_DEFINED_1}'
+        CLOSED = '${req.body.CLOSED}'
+        WHERE NCM_ID = '${req.params.id}'`;
+        // console.log(query);
+
+        connection.query(query, (err, rows, fields) => {
+            if (err) {
+                console.log('Failed to query for nonconformance 346 : ' + err);
+                res.sendStatus(500);
+                return;
+            }
+            res.json(rows);
+        });
+
+        connection.end();
+        });
+    } catch (err) {
+        console.log('Error connecting to Db 376');
         return;
     }
 
