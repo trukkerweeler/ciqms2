@@ -33,8 +33,6 @@ router.get('/', (req, res) => {
         , n.DUE_DATE        
         , n.PRODUCT_ID
         , ne.DESCRIPTION
-        , n.DISP_DATE
-        , n.VERIFY_DATE
         , n.CLOSED
         from NONCONFORMANCE n 
         left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
@@ -407,7 +405,7 @@ router.put('/close/:id', (req, res) => {
 
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for nonconformance 346 : ' + err);
+                console.log('Failed to query for nonconformance 410 : ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -417,7 +415,7 @@ router.put('/close/:id', (req, res) => {
         connection.end();
         });
     } catch (err) {
-        console.log('Error connecting to Db 356');
+        console.log('Error connecting to Db 420');
         return;
     }
 
@@ -458,7 +456,7 @@ router.get('/previous/:id', (req, res) => {
         connection.end();
         });
     } catch (err) {
-        console.log('Error connecting to Db 393');
+        console.log('Error connecting to Db 461');
         return;
     }
 });

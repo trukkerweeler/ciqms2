@@ -1,18 +1,22 @@
 import { loadHeaderFooter, getUserValue } from './utils.mjs';
 loadHeaderFooter();
 const user = await getUserValue();
-
 const test = true
+
+if (test) {
+    // console.log('ncm.js');
+    console.log(user);
+}
 
 // Get the project id from the url params
 let queryString = window.location.search;
 let urlParams = new URLSearchParams(queryString);
 let iid = urlParams.get('id');
+
 if (test) {
     console.log(iid);
     }
     
-
 const url = 'http://localhost:3010/ncm/' + iid;
 
 const main = document.querySelector('main');
@@ -38,12 +42,33 @@ while (main.firstChild) {
             detailHeading.setAttribute('id', 'detailTitle');
             detailHeading.textContent = 'Detail';
 
+            const divDetailBtns = document.createElement('div');
+            divDetailBtns.setAttribute('class', 'detailButtons');
+            divDetailBtns.setAttribute('id', 'detailButtons');
+
             const btnEditDetail = document.createElement('button');
             btnEditDetail.setAttribute('class', 'btn');
             btnEditDetail.setAttribute('class', 'btnEditNotes');
             btnEditDetail.textContent = 'Edit Detail';
             btnEditDetail.setAttribute('id', 'btnEditDetail');
             btnEditDetail.setAttribute('type', 'submit');
+
+            const btnClose = document.createElement('button');
+            btnClose.setAttribute('class', 'btn');
+            // btnClose.setAttribute('class', 'btnEditNotes');
+            btnClose.textContent = 'Close';
+            btnClose.setAttribute('id', 'btnCloseNCM');
+            btnClose.setAttribute('type', 'submit');
+
+            if (user === 'TKENT') {
+                btnClose.disabled = false;
+            } else {
+                btnClose.disabled = true;
+            }
+
+            divDetailBtns.appendChild(btnClose);
+            divDetailBtns.appendChild(btnEditDetail);
+
             
             const ncmDate = document.createElement('p');
             ncmDate.textContent = 'Request Date:' + ' ' + record[key]['NCM_DATE'].substring(0, 10);
@@ -58,8 +83,13 @@ while (main.firstChild) {
             } else {
                 aiClosedDate.textContent = 'Closed Date:' + ' ' + record[key]['CLOSED_DATE'].substring(0, 10);
                 // enable the closebutton
-                // closebutton.disabled = true;
-                console.log('closed date is NOT null');
+                btnClose.disabled = true;
+
+                if (test) {
+                    console.log('closed date is NOT null');
+                    // print button status
+                    console.log(btnClose.disabled);
+                }
             }
 
             aiClosedDate.setAttribute('class', 'tbl');
@@ -164,7 +194,7 @@ while (main.firstChild) {
             elemId.setAttribute('id', 'nid');
             
             detailSection.appendChild(detailHeading);
-            detailSection.appendChild(btnEditDetail);
+            detailSection.appendChild(divDetailBtns);
             detailSection.appendChild(productId);
             detailSection.appendChild(ncmDate);
             detailSection.appendChild(caAssTo);
@@ -425,29 +455,16 @@ while (main.firstChild) {
                 formfield.setAttribute('id', field);
                 formfield.setAttribute('class', 'field');
                 formfield.setAttribute('class', 'detailedit');
-                formfield.setAttribute('value', record[key][field]);
+                // if null, set the value to empty string
+                if (record[key][field] === null) {
+                    formfield.setAttribute('value', '');
+                } else {
+                    formfield.setAttribute('value', record[key][field]);
+                }
                 detailDialog.appendChild(formfield);
-             }           
-            };
-            // add closed field
-            // const closed = document.createElement('label');
-            // closed.textContent = 'Closed';
-            // detailDialog.appendChild(closed);
 
-            // const closedfield = document.createElement('input');
-            // closedfield.setAttribute('type', 'checkbox');
-            // closedfield.setAttribute('id', 'CLOSED');
-            // closedfield.setAttribute('class', 'field');
-            // closedfield.setAttribute('class', 'detailedit');
-            // if (record[key]['CLOSED'] === 'Y') {
-            //     closedfield.checked = true;
-            //     closedfield.setAttribute('value', 'Y');
-            // } else {
-            //     closedfield.checked = false;
-            //     closedfield.setAttribute('value', 'N');
-            // }
-
-            // detailDialog.appendChild(closedfield);
+            }           
+        };
 
             const saveDetail = document.createElement('button');
             saveDetail.textContent = 'Save';
@@ -456,14 +473,14 @@ while (main.firstChild) {
             saveDetail.setAttribute('id', 'saveDetail');
             detailDialog.appendChild(saveDetail);
 
-            const closeDetail = document.createElement('button');
-            closeDetail.textContent = 'Close';
-            closeDetail.setAttribute('class', 'btn');
-            closeDetail.setAttribute('class', 'closedialog');
-            closeDetail.setAttribute('id', 'closeDetail');
-            detailDialog.appendChild(closeDetail);
+            const btnCancelDetail = document.createElement('button');
+            btnCancelDetail.textContent = 'Cancel';
+            btnCancelDetail.setAttribute('class', 'btn');
+            btnCancelDetail.setAttribute('class', 'closedialog');
+            btnCancelDetail.setAttribute('id', 'btnCancelDetail');
+            detailDialog.appendChild(btnCancelDetail);
 
-        }     
+        }                  
 
         // show the detail dialog
         detailDialog.showModal();
@@ -516,7 +533,7 @@ while (main.firstChild) {
 
         // =============================================
         // Listen for the close button click
-        const closebutton = document.querySelector('#closeDetail');
+        const closebutton = document.querySelector('#btnCancelDetail');
         closebutton.addEventListener('click', async (event) => {
             // prevent the default action
             event.preventDefault();
@@ -525,6 +542,44 @@ while (main.firstChild) {
             detailDialog.close();
         });
 
+
+        
+
     });
+
+    // =============================================
+        // Listen for the close NCM button click
+        const closeNCM = document.querySelector('#btnCloseNCM');
+        closeNCM.addEventListener('click', async (event) => {
+            // prevent the default action
+            event.preventDefault();
+            const closeUrl = 'http://localhost:3010/ncm/close/' + iid;
+
+            let data = {
+                NCM_ID: iid,
+                CLOSED: "Y",
+                CLOSED_DATE: new Date().toISOString(),
+                INPUT_USER: getUserValue(),
+            };
+
+            if (test) {
+                console.log(data);
+            }
+
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            };
+
+            const response = await fetch(closeUrl, options);
+            const json = await response.json();
+
+            // refresh the page
+            window.location.reload();
+
+        });
 
     });

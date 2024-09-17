@@ -151,6 +151,48 @@ section p {
     margin-bottom: 2px;
 }
 
+#btnCloseNCM {
+    grid-column: 3;
+    grid-row: 1;
+    /* align button to top */
+    align-self: start;
+    /* align-self: end; */
+    /* align to right */
+    /* justify-self: end; */
+    width: 85px;
+    font-weight: 300;
+    font-size: small;
+    height: 20px;
+    padding-top: 3px;
+    margin-bottom: 2px;
+}
+
+#detailButtons {
+    grid-column: 3;
+    grid-row: 1;
+    /* align button to bottom */
+    align-self: end;
+    /* align to right */
+    justify-self: end;
+    /* width: 85px; */
+    /* font-weight: 300;
+    font-size: small;
+    height: 20px;
+    padding-top: 3px;
+    margin-bottom: 2px; */
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+#btnEditDetail {
+    margin-left: 2px;
+    padding-left: 4px;
+}
+
 #trendTitle, #detailTitle {
     grid-column: span 2;
 }
@@ -169,6 +211,10 @@ section p {
     display: grid;
     grid-template-columns: 1fr 1fr;
 
+}
+#cancelDetail {
+    padding-left: 5px;
+    margin-left: 1rem;
 }
 #dispTitle {
     grid-column: span 2;
