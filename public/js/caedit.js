@@ -37,7 +37,7 @@ button.addEventListener('click', async (event) => {
         }
     }
 
-    let url = 'http://localhost:3002/corrective/' + caidValue;
+    let url = 'http://localhost:3010/corrective/' + caidValue;
     // console.log(url);
 
 
@@ -213,7 +213,7 @@ modalsave.addEventListener('click', async (event) => {
         }
     }
 
-    let url = 'http://localhost:3002/corrective/' + cidValue;
+    let url = 'http://localhost:3010/corrective/' + cidValue;
     // console.log(url);
 
     const correctiontext = document.querySelector("#correctiontext");
@@ -240,7 +240,7 @@ modalsave.addEventListener('click', async (event) => {
     switch (fieldname.value) {
         case 'CORRECTION_TEXT':
             // console.log('input text');
-            url = 'http://localhost:3002/correction/' + cidValue;
+            url = 'http://localhost:3010/correction/' + cidValue;
             compositetext = user + " - " + mydate + "<br>" + newtext + "<br><br>" + correctiontext.innerHTML;
             data = { ...data, CORRECTION_TEXT: compositetext}
             break;
@@ -293,7 +293,7 @@ closecorrective.addEventListener('click', async (event) => {
         }
     }
 
-    let url = 'http://localhost:3002/corrective/' + cidValue + '/close';
+    let url = 'http://localhost:3010/corrective/' + cidValue + '/close';
     let myDate= new Date().toLocaleDateString();
     // convert myDate to yyyy-mm-dd format
     myDate = myDate.split('/').reverse().join('-');

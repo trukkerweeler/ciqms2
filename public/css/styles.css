@@ -665,6 +665,33 @@ input {
     font-size: small;
     padding-left: 5px;
 }
+.indexsection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: var(--secondary-color);
+}
+
+#indexsubheader {
+    grid-column: span 2;
+    text-align: center;
+}
+
+.sectionlinks {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 100px; */
+}
+.program {
+    grid-column: span 2;
+    border: #000 1px solid;
+    font-weight: 600;
+    font-size: small;
+    padding-left: 5px;
+    text-align: center;
+}
 
 
 @media print {

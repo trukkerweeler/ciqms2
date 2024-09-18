@@ -1,7 +1,7 @@
 import { loadHeaderFooter } from "./utils.mjs";
 loadHeaderFooter();
 
-const url = 'http://localhost:3002/corrective';
+const url = 'http://localhost:3010/corrective';
 
 // Send a POST request
 const form = document.querySelector('form');
