@@ -1,7 +1,15 @@
 import { loadHeaderFooter } from './utils.mjs';
+// import { dotenv } from '/dotenv';
+// dotenv.config();
+// // require("dotenv").config();
+
+// const NONCONFORMANCE_PORT = process.env.NONCONFORMANCE_PORT;
+
 loadHeaderFooter();
 
-const url = 'http://localhost:3010/corrective';
+
+// const url = `http://localhost:${NONCONFORMANCE_PORT}/ncm`;
+const url = `http://localhost:3010/ncm`;
 
 function getRecords () {
     const main = document.querySelector('main');
@@ -20,17 +28,7 @@ function getRecords () {
         for (let key in records[0]) {
             // if (fieldList.includes(key)){
             const th = document.createElement('th');
-            switch (key) {
-                case 'USER_DEFINED_1':
-                    th.textContent = 'UD1';
-                    break;
-                case 'USER_DEFINED_2':
-                    th.textContent = 'UD2';
-                    break;
-                default:
-                    th.textContent = key;
-                    break;
-            }
+            th.textContent = key;
             header.appendChild(th);
             // }
         }
@@ -44,11 +42,13 @@ function getRecords () {
                 if (key !== null) {
                     if (key.substring(key.length - 4) === 'DATE' && key.length > 0 && record[key] !== null) {
                         td.textContent = record[key].slice(0,10);
-                    } else if (key == 'CORRECTIVE_ID') {
-                            td.innerHTML = `<a href="http://localhost:3010/corrective.html?id=${record[key]}">${record[key]}</a>`;
+                    } else {
+                        if (key == 'NCM_ID') {
+                            // td.innerHTML = `<a href="http://localhost:${NONCONFORMANCE_PORT}/input.html?id=${record[key]}">${record[key]}</a>`;
+                            td.innerHTML = `<a href="http://localhost:3010/ncm.html?id=${record[key]}">${record[key]}</a>`;
+                        } else {
+                            td.textContent = record[key];
                         }
-                    else {
-                        td.textContent = record[key];                        
                     }
                 } else {
                     td.textContent = record[key];

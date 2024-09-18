@@ -31,6 +31,9 @@ app.use("/todo", todoRoutes);
 const csrRoutes = require("./routes/csr");
 app.use("/csr", csrRoutes);
 
+const correctiveRoutes = require("./routes/corrective");
+app.use("/corrective", correctiveRoutes);
+
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);
 });

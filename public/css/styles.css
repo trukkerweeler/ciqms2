@@ -182,6 +182,27 @@ section p {
     margin-bottom: 2px; */
 }
 
+#entryform {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    /* margin: 2rem auto; */
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+#entryform label, #entryform input, #entryform textarea, #entryform select {
+    /* display: block; */
+    width: 99%;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
 button:disabled {
     background-color: #ccc;
     color: #666;
