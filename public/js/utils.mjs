@@ -65,3 +65,12 @@ export function getFormFields(myform) {
     }
     return data;
   }
+
+  // Determine document type
+export function getDocType(docid) {
+  let proposedDocType = 'P';
+  if (/F[0-9]{4}-[0-9]{1,2}/.test(docid)) {
+    proposedDocType = 'F';
+  }
+  return proposedDocType;
+}

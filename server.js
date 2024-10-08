@@ -34,6 +34,18 @@ app.use("/csr", csrRoutes);
 const correctiveRoutes = require("./routes/corrective");
 app.use("/corrective", correctiveRoutes);
 
+const sysdocsRoutes = require("./routes/sysdocs");
+app.use("/sysdocs", sysdocsRoutes);
+
+const requestsRoutes = require("./routes/requests");
+app.use("/requests", requestsRoutes);
+
+const dcrhistoryRoutes = require("./routes/dcrhistory");
+app.use("/dcrhistory", dcrhistoryRoutes);
+
+const docsavailRoutes = require("./routes/docsavail");
+app.use("/docsavail", docsavailRoutes);
+
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);
 });
