@@ -164,7 +164,7 @@ router.post('/', (req, res) => {
         
         // escape the apostrophe
         const ncmDesc = req.body.DESCRIPTION.replace(/'/g, "\\'");
-        console.log(".post 160: " + ncmDesc);
+        // console.log(".post 167: " + ncmDesc);
         // escape the backslash
         const nid = req.body.NCM_ID;
         // const ncmDesc = req.body.DESCRIPTION.replace(/\\/g, "\\\\"); 
