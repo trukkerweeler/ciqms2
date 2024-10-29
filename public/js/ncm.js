@@ -452,7 +452,12 @@ while (main.firstChild) {
                 fieldDesc.textContent = field;
                 detailDialog.appendChild(fieldDesc);
                 const formfield = document.createElement('input');
+                // if the field is a date field, set the type to date
+                if (['NCM_DATE', 'DUE_DATE'].includes(field)) {
+                    formfield.setAttribute('type', 'date');
+                } else {
                 formfield.setAttribute('type', 'text');
+                }
                 formfield.setAttribute('id', field);
                 formfield.setAttribute('class', 'field');
                 formfield.setAttribute('class', 'detailedit');
@@ -460,7 +465,12 @@ while (main.firstChild) {
                 if (record[key][field] === null) {
                     formfield.setAttribute('value', '');
                 } else {
-                    formfield.setAttribute('value', record[key][field]);
+                    // if the field is a date field, set the value to the date
+                    if (['NCM_DATE', 'DUE_DATE'].includes(field)) {
+                        formfield.setAttribute('value', record[key][field].substring(0, 10));
+                    } else {
+                        formfield.setAttribute('value', record[key][field]);
+                    }
                 }
                 detailDialog.appendChild(formfield);
 
@@ -503,10 +513,22 @@ while (main.firstChild) {
 
             for (const key in record) {
                 for (const field in record[key]) {
-                    if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1', 'CLOSED'].includes (field)) {
+                    if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1'].includes (field)) {
                         const fieldname = field;
-                        const fieldvalue = document.querySelector('#' + field).value;
-                        data = { ...data, [fieldname]: fieldvalue}
+
+                        try {
+                            const fieldvalue = document.querySelector('#' + field).value;
+                            // if the field value is undefined, set it to empty string
+                            if (fieldvalue === undefined) {
+                                console.log('field value is undefined: ' + fieldname);
+                                fieldvalue = '';
+                            } else {
+                                data = { ...data, [fieldname]: fieldvalue };
+                            }
+                        } catch (error) {
+                            console.log('error');
+                            console.log(data);
+                        }
                     }
                 }
             }

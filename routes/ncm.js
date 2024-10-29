@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
 
         const query = `select n.NCM_ID
         , n.NCM_DATE
+        , n.NCM_TYPE
         , n.SUBJECT
         , n.ASSIGNED_TO
         , n.DUE_DATE        
@@ -357,7 +358,6 @@ router.put('/details/:id', (req, res) => {
         LOT_SIZE = '${req.body.LOT_SIZE}',
         LOT_NUMBER = '${req.body.LOT_NUMBER}',
         USER_DEFINED_1 = '${req.body.USER_DEFINED_1}'
-        CLOSED = '${req.body.CLOSED}'
         WHERE NCM_ID = '${req.params.id}'`;
         // console.log(query);
 

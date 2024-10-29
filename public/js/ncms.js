@@ -29,6 +29,9 @@ function getRecords () {
             // if (fieldList.includes(key)){
             const th = document.createElement('th');
             th.textContent = key;
+            if (key == 'NCM_TYPE') {
+                th.textContent = 'Type';
+            }
             header.appendChild(th);
             // }
         }
