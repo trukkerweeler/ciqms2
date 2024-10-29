@@ -1,7 +1,7 @@
 import { loadHeaderFooter, getUserValue } from './utils.mjs';
 loadHeaderFooter();
 const user = await getUserValue();
-const test = true
+const test = false;
 
 if (test) {
     // console.log('ncm.js');
@@ -364,7 +364,8 @@ while (main.firstChild) {
                     // console.log('input text');
                     let previoustext = document.querySelector('#inputtext').innerHTML;
                     let newtextTrend = document.querySelector('#newtextTrend').value;
-                    if (length(newtextTrend) === 0) {
+                    // if lenght of newtextTrend is 0, do not save
+                    if (newtextTrend.length === 0) {
                         alert('Not saving, no trend text.');
                         break
                     } else {
