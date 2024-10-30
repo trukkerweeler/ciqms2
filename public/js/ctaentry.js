@@ -26,9 +26,14 @@ form.addEventListener('submit', async (event) => {
         CREATE_BY: 'TKENT',
     };
     for (let field of data.keys()) {
-        dataJson[field] = data.get(field);
+        // change INSTRUCTOR and PEOPLE_ID to uppercase
+        if (field === 'INSTRUCTOR' || field === 'PEOPLE_ID') {
+            dataJson[field] = data.get(field).toUpperCase();
+        } else {
+            dataJson[field] = data.get(field);
+        }
     } 
-    console.log(dataJson);
+    console.log("31" + dataJson);
 
     try {
         await fetch(url, {
