@@ -13,7 +13,7 @@ ncmButton.addEventListener('click', () => {
 // append the button ca with an anchor to corrective.html
 const caButton = document.querySelector('#ca');
 caButton.addEventListener('click', () => {
-  window.location.href = 'corrective.html';
+  window.location.href = 'correctives.html';
 });
 
 // append the button sysdoc with an anchor to documents.html

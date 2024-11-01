@@ -27,6 +27,17 @@ function createTable(data) {
     const headerRow = document.createElement('tr');
     headers.forEach(header => {
         const th = document.createElement('th');
+        // Header aliases
+        switch (header) {
+            case 'USER_DEFINED_1':
+                header = 'UD1';
+                break;
+            case 'USER_DEFINED_2':
+                header = 'UD2';
+                break;
+            default:
+                break;
+        }
         th.textContent = header;
         th.addEventListener('click', () => sortTable(table, header));
         headerRow.appendChild(th);
@@ -41,7 +52,12 @@ function createTable(data) {
             const td = document.createElement('td');
             // if the word 'date' is in the header, format the date
             if (header.toLowerCase().includes('date')) {
-                td.textContent = new Date(item[header]).toLocaleDateString();
+                // if the date is null, display an empty string
+                if (item[header] === null) {
+                    td.textContent = '';
+                } else {
+                    td.textContent = new Date(item[header]).toLocaleDateString();
+                }
             } else if (header == 'CORRECTIVE_ID') {
                 td.innerHTML = `<a href="http://localhost:3010/corrective.html?id=${item[header]}">${item[header]}</a>`;
             } else {
