@@ -6,6 +6,7 @@ import { loadHeaderFooter } from './utils.mjs';
 // const NONCONFORMANCE_PORT = process.env.NONCONFORMANCE_PORT;
 
 loadHeaderFooter();
+const year = new Date().getFullYear();
 
 
 // const url = `http://localhost:${NONCONFORMANCE_PORT}/ncm`;
