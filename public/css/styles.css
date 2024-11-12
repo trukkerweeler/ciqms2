@@ -40,7 +40,15 @@ section {
     transition: var(--transition);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    margin-bottom: 0;
+    margin-top: 0;
 }
+
+#btnCorrection, #btnCause, #btnControl {
+    grid-row-start: 1;
+    grid-column-start: 3;
+}
+
 section:nth-child(1) {
     grid-template-columns: 1fr 1fr;
 }
@@ -98,6 +106,14 @@ section h3 {
     /* margin-left: 1rem; */
 }
 
+#correctionSection h3, #causeSection h3, #controlSection h3 {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    text-align: left;
+    /* margin-left: 1rem; */
+    padding-bottom: 0;
+}
+
 section p {
     grid-column: span 3;
     margin-top: 0;
@@ -123,7 +139,7 @@ section p {
     text-align: left;
     /* font-weight: 600; */
     font-size: small;
-    padding-bottom: .5rem;
+    /* padding-bottom: .5rem; */
     margin-bottom: 0;
 }
 
@@ -684,6 +700,10 @@ input {
     margin-right: 25%;
     margin-bottom: 100px; */
 }
+.sectionlinks li {
+    display: inline;
+    margin-right: 10px;
+}
 .program {
     grid-column: span 2;
     border: #000 1px solid;
@@ -691,6 +711,15 @@ input {
     font-size: small;
     padding-left: 5px;
     text-align: center;
+}
+
+#menudiv {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 100px;
+    gap: 10px;
 }
 
 

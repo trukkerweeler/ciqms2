@@ -6,6 +6,7 @@ import { loadHeaderFooter } from './utils.mjs';
 // const NONCONFORMANCE_PORT = process.env.NONCONFORMANCE_PORT;
 
 loadHeaderFooter();
+const year = new Date().getFullYear();
 
 
 // const url = `http://localhost:${NONCONFORMANCE_PORT}/ncm`;
@@ -29,6 +30,9 @@ function getRecords () {
             // if (fieldList.includes(key)){
             const th = document.createElement('th');
             th.textContent = key;
+            if (key == 'NCM_TYPE') {
+                th.textContent = 'Type';
+            }
             header.appendChild(th);
             // }
         }

@@ -7,7 +7,7 @@ let urlParams = new URLSearchParams(queryString);
 let projectId = urlParams.get('id');
     
 
-const url = 'http://localhost:3003/project/' + projectId;
+const url = 'http://localhost:3010/project/' + projectId;
 
 const main = document.querySelector('main');
 // Delete the child nodes of the main element

@@ -28,17 +28,19 @@ router.get('/', (req, res) => {
 
         const query = `select n.NCM_ID
         , n.NCM_DATE
+        , n.NCM_TYPE
         , n.SUBJECT
         , n.ASSIGNED_TO
         , n.DUE_DATE        
         , n.PRODUCT_ID
+        , n.PO_NUMBER
         , ne.DESCRIPTION
         , n.CLOSED
         from NONCONFORMANCE n 
         left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
         left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
         left join NCM_VERIFICATION nv on n.NCM_ID = nv.NCM_ID
-        order by n.NCM_ID desc`;
+        order by n.CLOSED, n.NCM_ID desc`;
 
         // from NONCONFORMANCE n left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID order by pi.INPUT_ID desc`;
         // where USER_DEFINED_1 = 'MR'
@@ -126,7 +128,9 @@ router.post('/', (req, res) => {
             , DUE_DATE
             , NCM_TYPE
             , SUBJECT
+            , CAUSE
             , PRODUCT_ID
+            , PO_NUMBER
             , LOT_SIZE
             , LOT_NUMBER
             , USER_DEFINED_1
@@ -141,7 +145,9 @@ router.post('/', (req, res) => {
                 , '${req.body.DUE_DATE}'
                 , '${req.body.NCM_TYPE}'
                 , '${req.body.SUBJECT}'
+                , '${req.body.CAUSE}'
                 , '${req.body.PRODUCT_ID}'
+                , '${req.body.PO_NUMBER}'
                 , '${req.body.LOT_SIZE}'
                 , '${req.body.LOT_NUMBER}'
                 , '${req.body.USER_DEFINED_1}'
@@ -164,7 +170,7 @@ router.post('/', (req, res) => {
         
         // escape the apostrophe
         const ncmDesc = req.body.DESCRIPTION.replace(/'/g, "\\'");
-        console.log(".post 160: " + ncmDesc);
+        // console.log(".post 167: " + ncmDesc);
         // escape the backslash
         const nid = req.body.NCM_ID;
         // const ncmDesc = req.body.DESCRIPTION.replace(/\\/g, "\\\\"); 
@@ -357,7 +363,6 @@ router.put('/details/:id', (req, res) => {
         LOT_SIZE = '${req.body.LOT_SIZE}',
         LOT_NUMBER = '${req.body.LOT_NUMBER}',
         USER_DEFINED_1 = '${req.body.USER_DEFINED_1}'
-        CLOSED = '${req.body.CLOSED}'
         WHERE NCM_ID = '${req.params.id}'`;
         // console.log(query);
 

@@ -15,7 +15,27 @@
 
 <body>
     <header id="header"></header>
-    <h1>Corrective Records</h1>
+    <dialog id="correctionDialog" class="editDialog">
+        <form id="correction-form">
+            <label for="correction-text">Enter correction:</label>
+            <textarea id="new-correction-text" name="correction-text" rows="4" cols="50"></textarea>
+            <button type="submit" id="correctionSave">Submit</button>
+        </form>
+    </dialog>
+    <dialog id="rootCauseDialog" class="editDialog">
+        <form id="root-cause-form">
+            <label for="root-cause-text">Enter root cause:</label>
+            <textarea id="root-cause-text" name="root-cause-text" rows="4" cols="50"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </dialog>
+    <dialog id="actionDialog" class="editDialog">
+        <form id="action-form">
+            <label for="action-text">Enter systemic action:</label>
+            <textarea id="action-text" name="action-text" rows="4" cols="50"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </dialog>
     <main id="main"></main>    
     <footer id="footer"></footer>
 </body>
