@@ -40,7 +40,15 @@ section {
     transition: var(--transition);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    margin-bottom: 0;
+    margin-top: 0;
 }
+
+#btnCorrection, #btnCause, #btnControl {
+    grid-row-start: 1;
+    grid-column-start: 3;
+}
+
 section:nth-child(1) {
     grid-template-columns: 1fr 1fr;
 }
@@ -96,6 +104,14 @@ section h3 {
     grid-column: span 3;
     text-align: left;
     /* margin-left: 1rem; */
+}
+
+#correctionSection h3, #causeSection h3, #controlSection h3 {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    text-align: left;
+    /* margin-left: 1rem; */
+    padding-bottom: 0;
 }
 
 section p {

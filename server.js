@@ -61,6 +61,9 @@ app.use("/suppliers", supplierRoutes);
 const attendanceRoutes = require("./routes/attendance");
 app.use("/attendance", attendanceRoutes);
 
+const projectRoutes = require("./routes/project");
+app.use("/project", projectRoutes);
+
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);
 });
