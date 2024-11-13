@@ -21,6 +21,7 @@ fetch(url, { method: 'GET' })
 .then(response => response.json())
 .then(record => {
     // console.log(record);
+    let caid = record[0]['CORRECTIVE_ID'];
     for (const key in record) {
         // Header =======================================
         const elemRpt = document.createElement('h1');
@@ -110,16 +111,47 @@ fetch(url, { method: 'GET' })
                     })
                 });
                 // close the dialog
-                document.getElementById('detailDialog').close();
+                document.getElementById('detailsDialog').close();
                 // reload the page
-                location.reload();
+                // location.reload();
             });
         });
+
+        // close button
+        const btnClose = document.createElement('button');
+        btnClose.setAttribute('id', 'btnClose');
+        btnClose.setAttribute('class', 'btnEditNotes');
+        btnClose.textContent = 'Close';
+        btnClose.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const closeUrl = 'http://localhost:3010/corrective/' + caid + '/close';
+            await fetch(closeUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'MODIFIED_BY': user,
+                    'CLOSED': 'Y',
+                    'CLOSED_DATE': new Date().toISOString()
+                })
+            });
+            // reload the page
+            location.reload();
+        });
+
+        const detailButtons = document.createElement('div');
+        detailButtons.setAttribute('class', 'detailButtons');
+        detailButtons.setAttribute('id', 'detailButtons');
+        detailButtons.appendChild(btnClose);
+        detailButtons.appendChild(btnDetails);
+
         const empty = document.createElement('p');
 
         // Append the elements to the detail section
         detailSection.appendChild(detailHeader);
-        detailSection.appendChild(btnDetails);
+        // detailSection.appendChild(btnClose);
+        detailSection.appendChild(detailButtons);
         detailSection.appendChild(empty);
         detailSection.appendChild(caDate);
         detailSection.appendChild(caAssTo);

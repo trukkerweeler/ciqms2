@@ -296,7 +296,13 @@ router.put('/:id', (req, res) => {
             // console.log(query);
             break;
         default:
-            console.log('No match');
+            mytable = 'CORRECTIVE';
+            // if PROJECT is undefined, set it to zero length string
+            if (typeof(req.body.PROJECT_ID) === 'undefined') {
+                req.body.PROJECT_ID = '';
+            }
+            query = `UPDATE CORRECTIVE SET ASSIGNED_TO = '${req.body.ASSIGNED_TO}', REQUEST_BY = '${req.body.REQUEST_BY}', REFERENCE = '${req.body.REFERENCE}', PROJECT_ID = '${req.body.PROJECT_ID}' WHERE CORRECTIVE_ID = '${req.params.id}'`;
+            // console.log(query);
     }
     // Replace the br with a newline
     try {
@@ -375,7 +381,12 @@ router.put('/:id/close', (req, res) => {
                 return;
             }
 
-            const query = `UPDATE CORRECTIVE SET CLOSED = 'Y', CLOSED_DATE = now(), MODIFIED_DATE = now() WHERE CORRECTIVE_ID = '${req.params.id}'`;
+            const query = `UPDATE CORRECTIVE SET 
+            CLOSED = '${req.body.CLOSED}'
+            , CLOSED_DATE = '${req.body.CLOSED_DATE}'
+            , MODIFIED_BY = '${req.body.MODIFIED_BY}'
+            , MODIFIED_DATE = now() 
+            WHERE CORRECTIVE_ID = '${req.params.id}'`;
             // console.log(query);
             connection.query(query, (err, rows, fields) => {
                 if (err) {

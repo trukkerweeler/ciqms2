@@ -182,6 +182,9 @@ section p {
     padding-top: 3px;
     margin-bottom: 2px;
 }
+.detailButtons button {
+    margin-left: 6px;
+}
 
 #detailButtons {
     grid-column: 3;
