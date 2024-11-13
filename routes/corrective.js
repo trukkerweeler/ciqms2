@@ -35,6 +35,7 @@ router.get('/', (req, res) => {
         , ia.CORRECTION_DATE
         , ia.ACTION_BY 
         , c.CREATE_DATE
+        , c.DUE_DATE
         , CLOSED
         , c.CLOSED_DATE
         from CORRECTIVE c 
@@ -247,7 +248,7 @@ router.get('/:id', (req, res) => {
 
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective actions: ' + err);
+                console.log('250 Failed to query for corrective actions: ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -285,6 +286,15 @@ router.put('/:id', (req, res) => {
             appended = appended.replace(/<br>/g, "\n");
             query = `insert into CORRECTIVE_CTRL (CORRECTIVE_ID, CONTROL_TEXT, MODIFIED_DATE) values ('${req.params.id}','${appended}', NOW()) on duplicate key update CONTROL_TEXT = '${appended}';`;
             break;
+        case 'CORRECTION_TEXT':
+            mytable = 'CORRECTION';
+            let correctiondate = req.body.CORRECTION_DATE;
+            let actionby = req.body.ACTION_BY;
+            appended = req.body.CORRECTION_TEXT.replace(/<br>/g, "\n");
+            // appended = appended.replace(/<br>/g, "\n");
+            query = `insert into CORRECTION (CORRECTIVE_ID, CORRECTION_DATE, ACTION_BY, CORRECTION_TEXT) values ('${req.params.id}', '${correctiondate}', '${actionby}','${appended}') on duplicate key update CORRECTION_TEXT = '${appended}', CORRECTION_DATE = '${correctiondate}', ACTION_BY = '${actionby}';`;
+            // console.log(query);
+            break;
         default:
             console.log('No match');
     }
@@ -309,7 +319,7 @@ router.put('/:id', (req, res) => {
         // q1 = `insert ignore into ${mytable} (CORRECTIVE_ID, CREATE_DATE) values ('${req.params.id}, now()')`
             connection.query(query, (err, rows, fields) => {
                 if (err) {
-                    console.log('Failed to query for corrective actions: ' + err);
+                    console.log('321 Failed to query for corrective actions: ' + err);
                     res.sendStatus(500);
                     return;
                 }

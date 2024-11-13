@@ -22,16 +22,20 @@ fetch(url, { method: 'GET' })
 .then(record => {
     // console.log(record);
     for (const key in record) {
-
-        // Detail section=======================================
-        const detailSection = document.createElement('section');
-        detailSection.setAttribute('class', 'section');
+        // Header =======================================
         const elemRpt = document.createElement('h1');
         const elemId = document.createElement('h2');
         elemRpt.textContent = 'Corrective Action Report';
         elemRpt.setAttribute('class', 'header');
         elemId.textContent = 'Corrective Id: ' + record[key]['CORRECTIVE_ID'] + ' - ' + record[key]['TITLE'];
         elemId.setAttribute('class', 'header2');
+
+        // Detail section=======================================
+        const detailSection = document.createElement('section');
+        detailSection.setAttribute('class', 'section');
+        detailSection.setAttribute('id', 'detailSection');
+        const detailHeader = document.createElement('h3');
+        detailHeader.textContent = 'Details';
         const caDate = document.createElement('p');
         caDate.setAttribute('class', 'actiondate');
         if (record[key]['CORRECTIVE_DATE']) {
@@ -43,6 +47,7 @@ fetch(url, { method: 'GET' })
         const caAssTo = document.createElement('p');
         caAssTo.textContent = 'Assigned To:' + ' ' + record[key]['ASSIGNED_TO'];
         caAssTo.setAttribute('class', 'tbl');
+        caAssTo.setAttribute('id', 'assignedto');
         const caClosedDate = document.createElement('p');
         if (record[key]['CLOSED_DATE'] === null || record[key]['CLOSED_DATE'] === '0000-00-00'|| record[key]['CLOSED_DATE'] === ''|| record[key]['CLOSED_DATE'].length === 0) {
             caClosedDate.textContent = 'Closed Date:' + ' ' + '';
@@ -54,9 +59,11 @@ fetch(url, { method: 'GET' })
         const caRef = document.createElement('p');
         caRef.textContent = 'Reference:' + ' ' + record[key]['REFERENCE'];
         caRef.setAttribute('class', 'tbl');
+        caRef.setAttribute('id', 'reference');
         const reqBy = document.createElement('p');
         reqBy.textContent = 'Request By:' + ' ' + record[key]['REQUEST_BY'];
         reqBy.setAttribute('class', 'tbl');
+        reqBy.setAttribute('id', 'requestby');
         const project = document.createElement('p');
         if (record[key]['PROJECT_ID'] === null) {
             project.textContent = 'Project:' + ' ' + '(No project)';
@@ -64,8 +71,56 @@ fetch(url, { method: 'GET' })
             project.textContent = 'Project:' + ' ' + record[key]['PROJECT_ID'];
         }
         project.setAttribute('class', 'tbl');
+        project.setAttribute('id', 'project');
+
+        const btnDetails = document.createElement('button');
+        btnDetails.setAttribute('id', 'btnDetails');
+        btnDetails.setAttribute('class', 'btnEditNotes');
+        btnDetails.textContent = 'Edit';
+        btnDetails.addEventListener('click', (e) => {
+            e.preventDefault();
+            // load values to the form
+            document.getElementById('assignedto').value = record[key]['ASSIGNED_TO'];
+            document.getElementById('reference').value = record[key]['REFERENCE'];
+            document.getElementById('requestby').value = record[key]['REQUEST_BY'];
+            document.getElementById('project').value = record[key]['PROJECT_ID'];
+            // show the dialog
+            document.getElementById('detailsDialog').showModal();
+
+            // save the changes
+            document.getElementById('detailSave').addEventListener('click', async (e) => {
+                e.preventDefault();
+                // get the values from the form
+                let assignedto = document.getElementById('assignedto').value;
+                let reference = document.getElementById('reference').value;
+                let requestby = document.getElementById('requestby').value;
+                let project = document.getElementById('project').value;
+                // update the record
+                let url = 'http://localhost:3010/corrective/' + caid;
+                await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'ASSIGNED_TO': assignedto,
+                        'REFERENCE': reference,
+                        'REQUEST_BY': requestby,
+                        'PROJECT_ID': project
+                    })
+                });
+                // close the dialog
+                document.getElementById('detailDialog').close();
+                // reload the page
+                location.reload();
+            });
+        });
+        const empty = document.createElement('p');
 
         // Append the elements to the detail section
+        detailSection.appendChild(detailHeader);
+        detailSection.appendChild(btnDetails);
+        detailSection.appendChild(empty);
         detailSection.appendChild(caDate);
         detailSection.appendChild(caAssTo);
         detailSection.appendChild(caClosedDate);
@@ -103,6 +158,17 @@ fetch(url, { method: 'GET' })
         } else {
             correctionDate.innerHTML = 'Correction Date:' + ' ' + '';
         }
+        const actionby = document.createElement('p');
+        actionby.setAttribute('id', 'actioner');
+        let dbActioner = record[key]['ACTION_BY'];
+        if (dbActioner === null) {
+            dbActioner = '';
+        } else {
+            dbActioner = dbActioner.toUpperCase();
+        }
+        actionby.textContent = 'Action By:' + ' ' + dbActioner
+        
+
         const btnCorrection = document.createElement('button');
         btnCorrection.setAttribute('id', 'btnCorrection');
         btnCorrection.setAttribute('class', 'btnEditNotes');
@@ -110,8 +176,15 @@ fetch(url, { method: 'GET' })
         btnCorrection.addEventListener('click', (e) => {
             e.preventDefault();
             // load values to the form
+            let actioner = record[key]['ACTION_BY'];
+            if (actioner === null) {
+                actioner = '';
+            } else {
+                actioner = actioner.toUpperCase();
+            }
+            document.getElementById('actionby').value = actioner;
             document.getElementById('correctiontext').value = record[key]['CORRECTION_TEXT'];
-            // document.getElementById('correctiondate').value = record[key]['CORRECTION_DATE'];
+            document.getElementById('correctiondate').value = record[key]['CORRECTION_DATE'];
             // show the dialog
             document.getElementById('correctionDialog').showModal();
 
@@ -119,20 +192,29 @@ fetch(url, { method: 'GET' })
             document.getElementById('correctionSave').addEventListener('click', async (e) => {
                 e.preventDefault();
                 // get the values from the form
+                let newactioner = document.getElementById('actionby').value;
+                if (newactioner === '') {
+                    newactioner = '';
+                } else {
+                    newactioner = newactioner.toUpperCase();
+                }
                 let correctiontext = document.getElementById('correctiontext').value;
                 let newcorrectiontext = document.getElementById('new-correction-text').value;
                 let formatteddate = new Date().toISOString();
                 formatteddate = formatteddate.replace('T', ' ').substring(0, 19);
                 // replace the colon
-                formatteddate = formatteddate.replace(':', '');
-                newcorrectiontext = user + ' - ' + formatteddate + ': ' + newcorrectiontext;
-                let concatText = newcorrectiontext + '\n' + correctiontext;
-                console.log(concatText);
+                // formatteddate = formatteddate.replace(':', '');
+                newcorrectiontext = user + ' - ' + formatteddate + '\n ' + newcorrectiontext + '\n';
+                let concatText = '';
+                // if correctiontext is empty, just use the newcorrectiontext
+                if (correctiontext === '' || correctiontext === null) {
+                    concatText = newcorrectiontext;
+                } else {
+                    concatText = newcorrectiontext + '\n' + correctiontext;
+                    // console.log(concatText);
+                }
                 // // let correctiondate = document.getElementById('correctiondate').value;
-                // let correctiondate = new Date().toISOString().slice(0, 10);
-                // // console.log(correctiontext);
-                // // console.log(correctiondate);
-                // // console.log(caid);
+                let correctiondate = new Date().toISOString().slice(0, 10);
                 // update the record
                 let url = 'http://localhost:3010/corrective/' + caid;
                 await fetch(url, {
@@ -141,8 +223,9 @@ fetch(url, { method: 'GET' })
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        'CORRECTION_DATE': correctiondate,
                         'CORRECTION_TEXT': concatText,
-                        // 'CORRECTION_DATE': correctiondate
+                        'ACTION_BY': newactioner
                     })
                 });
                 // close the dialog
@@ -151,9 +234,10 @@ fetch(url, { method: 'GET' })
                 location.reload();
         });
         });
-
+        // Append child elements to the correction section
         correctionSection.appendChild(correctionHeader);
         correctionSection.appendChild(correctionDate);
+        correctionSection.appendChild(actionby);
         correctionSection.appendChild(correctionText);
         correctionSection.appendChild(btnCorrection);
 
@@ -171,6 +255,56 @@ fetch(url, { method: 'GET' })
         btnCause.setAttribute('id', 'btnCause');
         btnCause.setAttribute('class', 'btnEditNotes');
         btnCause.textContent = 'Edit';
+
+        btnCause.addEventListener('click', (e) => {
+            e.preventDefault();
+            // load values to the form
+            document.getElementById('causetext').value = record[key]['CAUSE_TEXT'];
+            // show the dialog
+            document.getElementById('causeDialog').showModal();
+
+            // save the changes
+            document.getElementById('causeSave').addEventListener('click', async (e) => {
+                e.preventDefault();
+                // get the values from the form
+                let causetext = document.getElementById('causetext').value;
+                let newcausetext = document.getElementById('new-cause-text').value;
+                let formatteddate = new Date().toISOString();
+                formatteddate = formatteddate.replace('T', ' ').substring(0, 19);
+                // replace the colon
+                // formatteddate = formatteddate.replace(':', '');
+                newcausetext = user + ' - ' + formatteddate + '\n ' + newcausetext + '\n';
+                let concatText = '';
+                // if causetext is empty, just use the newcausetext
+                if (causetext === '' || causetext === null) {
+                    concatText = newcausetext;
+                } else {
+                    concatText = newcausetext + '\n' + causetext;
+                    // console.log(concatText);
+                }
+                // let causetext = document.getElementById('causetext').value;
+                // let causeDate = document.getElementById('causedate').value;
+                let causeDate = new Date().toISOString().slice(0, 10);
+                // update the record
+                let url = 'http://localhost:3010/corrective/' + caid;
+                await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'CAUSE_DATE': causeDate, //the date is not being updated - placeholder for uniform route
+                        'CAUSE_TEXT': concatText
+                    })
+                });
+                // close the dialog
+                document.getElementById('causeDialog').close();
+                // reload the page
+                location.reload();
+            });
+        });
+
+        // Add child elements to the cause section
         causeSection.appendChild(causeHeader);
         causeSection.appendChild(causeText);   
         causeSection.appendChild(btnCause);
@@ -195,7 +329,57 @@ fetch(url, { method: 'GET' })
         const btnControl = document.createElement('button');
         btnControl.setAttribute('id', 'btnControl');
         btnControl.setAttribute('class', 'btnEditNotes');
-        btnControl.textContent = 'Edit';     
+        btnControl.textContent = 'Edit';
+        
+        btnControl.addEventListener('click', (e) => {
+            e.preventDefault();
+            // load values to the form
+            document.getElementById('controltext').value = record[key]['CONTROL_TEXT'];
+            // show the dialog
+            document.getElementById('controlDialog').showModal();
+
+            // save the changes
+            document.getElementById('controlSave').addEventListener('click', async (e) => {
+                e.preventDefault();
+                // get the values from the form
+                let controltext = document.getElementById('controltext').value;
+                let newcontroltext = document.getElementById('new-control-text').value;
+                let formatteddate = new Date().toISOString();
+                formatteddate = formatteddate.replace('T', ' ').substring(0, 19);
+                // replace the colon
+                // formatteddate = formatteddate.replace(':', '');
+                newcontroltext = user + ' - ' + formatteddate + '\n ' + newcontroltext + '\n';
+                let concatText = '';
+                // if controltext is empty, just use the newcontroltext
+                if (controltext === '' || controltext === null) {
+                    concatText = newcontroltext;
+                } else {
+                    concatText = newcontroltext + '\n' + controltext;
+                    // console.log(concatText);
+                }
+                // let controltext = document.getElementById('controltext').value;
+                // let controlDate = document.getElementById('controldate').value;
+                let controlDate = new Date().toISOString().slice(0, 10);
+                // update the record
+                let url = 'http://localhost:3010/corrective/' + caid;
+                await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'CORR_ACTION_DATE': controlDate,
+                        'CONTROL_TEXT': concatText
+                    })
+                });
+                // close the dialog
+                document.getElementById('controlDialog').close();
+                // reload the page
+                location.reload();
+            });
+        });
+        
+        // Add child elements to the control section
         controlSection.appendChild(controlHeader);
         controlSection.appendChild(controlDate);
         controlSection.appendChild(controlText);

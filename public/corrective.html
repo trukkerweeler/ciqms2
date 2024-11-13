@@ -15,25 +15,43 @@
 
 <body>
     <header id="header"></header>
+    <dialog id="detailsDialog">
+        <form id="details-form">
+            <label for="assignedto">Assigned to:</label>
+            <input type="text" id="assignedto" name="assigned-to">
+            <label for="requestby">Request by:</label>
+            <input type="text" id="requestby" name="request-by">
+            <label for="project">Project:</label>
+            <input type="text" id="project" name="project">
+            <label for="reference">Reference:</label>
+            <input type="text" id="reference" name="reference">
+            <button type="submit" id="detailsSave">Submit</button>
+        </form>
+    </dialog>
+
     <dialog id="correctionDialog" class="editDialog">
         <form id="correction-form">
+            <label for="actionby">Action by:</label>
+            <input type="text" id="actionby" name="actionby">
+            <label for="correctiondate">Correction date:</label>
+            <input type="date" id="correctiondate" name="correctiondate">
             <label for="correction-text">Enter correction:</label>
             <textarea id="new-correction-text" name="correction-text" rows="4" cols="50"></textarea>
             <button type="submit" id="correctionSave">Submit</button>
         </form>
     </dialog>
-    <dialog id="rootCauseDialog" class="editDialog">
+    <dialog id="causeDialog" class="editDialog">
         <form id="root-cause-form">
-            <label for="root-cause-text">Enter root cause:</label>
-            <textarea id="root-cause-text" name="root-cause-text" rows="4" cols="50"></textarea>
-            <button type="submit">Submit</button>
+            <label for="new-cause-text">Enter root cause:</label>
+            <textarea id="new-cause-text" name="new-cause-text" rows="4" cols="50"></textarea>
+            <button type="submit" id="causeSave">Submit</button>
         </form>
     </dialog>
-    <dialog id="actionDialog" class="editDialog">
+    <dialog id="controlDialog" class="editDialog">
         <form id="action-form">
-            <label for="action-text">Enter systemic action:</label>
-            <textarea id="action-text" name="action-text" rows="4" cols="50"></textarea>
-            <button type="submit">Submit</button>
+            <label for="new-control-text">Enter systemic action:</label>
+            <textarea id="new-control-text" name="new-control-text" rows="4" cols="50"></textarea>
+            <button type="submit" id="controlSave">Submit</button>
         </form>
     </dialog>
     <main id="main"></main>    

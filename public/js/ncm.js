@@ -192,9 +192,12 @@ while (main.firstChild) {
             elemId.textContent = 'NCM Id: ' + record[key]['NCM_ID'];
             elemId.setAttribute('class', 'header2');
             elemId.setAttribute('id', 'nid');
+
+            const empty = document.createElement('p');
             
             detailSection.appendChild(detailHeading);
             detailSection.appendChild(divDetailBtns);
+            detailSection.appendChild(empty);
             detailSection.appendChild(productId);
             detailSection.appendChild(ncmDate);
             detailSection.appendChild(caAssTo);

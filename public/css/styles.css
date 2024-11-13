@@ -44,7 +44,7 @@ section {
     margin-top: 0;
 }
 
-#btnCorrection, #btnCause, #btnControl {
+#btnCorrection, #btnCause, #btnControl, #btnDetails {
     grid-row-start: 1;
     grid-column-start: 3;
 }
@@ -106,7 +106,7 @@ section h3 {
     /* margin-left: 1rem; */
 }
 
-#correctionSection h3, #causeSection h3, #controlSection h3 {
+#correctionSection h3, #causeSection h3, #controlSection h3, #detailSection h3 {
     grid-column-start: 1;
     grid-row-start: 1;
     text-align: left;
