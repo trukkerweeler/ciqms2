@@ -48,6 +48,10 @@ function getRecords () {
                                 td.textContent = '';
                             }
                             break;
+                        case 'REQUEST_ID':
+                            // add a link to the record
+                            td.innerHTML = `<a href="http://localhost:3010/dcr.html?id=${record[key]}">${record[key]}</a>`;
+                            break;
                         default:
                             td.textContent = record[key];
                     // tr.appendChild(td);

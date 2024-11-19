@@ -158,7 +158,7 @@ router.post('/', (req, res) => {
                 , '${req.body.CREATE_BY}'
             )`;
         
-        console.log(query);
+        // console.log(query);
 
         connection.query(query, (err, rows, fields) => {
             if (err) {

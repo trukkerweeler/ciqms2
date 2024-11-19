@@ -106,7 +106,7 @@ section h3 {
     /* margin-left: 1rem; */
 }
 
-#correctionSection h3, #causeSection h3, #controlSection h3, #detailSection h3 {
+#correctionSection h3, #causeSection h3, #controlSection h3, #detailSection h3, #requestSection h3, #responseSection h3 {
     grid-column-start: 1;
     grid-row-start: 1;
     text-align: left;
@@ -154,6 +154,7 @@ section p {
 }
 
 .btnEditNotes {
+    grid-row: 1;
     grid-column: 3;
     /* align button to bottom */
     align-self: end;
@@ -750,6 +751,9 @@ input {
     }
     #inspectiondate {
         display: block;
+    }
+    .btnEditNotes {
+        display: none;
     }
 
 }

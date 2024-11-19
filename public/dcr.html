@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="js node test page.">
+    <meta name="author" content="This page authored by timokent">
+    <link  rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abel&family=Tapestry&display=swap">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="images/ci-logo.png">
+    <title>Document Change Request - Detail</title>
+</head>
+<body>
+    <header id="header"></header>
+    <dialog id="confirmDialog" class="confirmDialog">
+        <div class="dialogTitle">Confirm</div>
+        <div id="confirmMessage"></div>
+        <button id="btnConfirmYes" class="confirmYes">Yes</button>
+        <button id="btnConfirmNo" class="confirmNo">No</button>
+    </dialog>
+    <dialog id="detailDialog" class="editDialog">
+        <div class="dialogTitle">Edit Request</div>
+        <form class="editdetail" id="editreqform">
+            <label for="assignedto"></label>
+            <input type="text" id="assignedto" name="assignedto">
+            <label for="duedate"></label>
+            <input type="date" id="duedate" name="duedate">
+            <label for="response"></label>
+            <textarea id="response" name="response"></textarea>
+        </form>
+        <button id="btnCloseEditReq" class="closedialog">Close</button>
+    </dialog>
+    
+    <dialog id="requestDialog" class="editDialog">
+        <div class="dialogTitle">Append Request</div>
+        <form class="editdetail newreq" id="newreqform">
+            <label for="request"></label>
+            <textarea id="request" name="request"></textarea>
+        </form>
+        <!-- Save button -->
+        <button id="btnSaveRequest" class="save">Save</button>
+        <!-- Close button -->
+        <button id="btnCloseRequest" class="closedialog">Close</button>
+    </dialog>
+
+    <dialog id="responseDialog" class="editDialog">
+        <div class="dialogTitle">Append Response</div>
+        <form class="editdetail newresp" id="newrespform">
+            <label for="response"></label>
+            <textarea id="response" name="response"></textarea>
+        </form>
+        <!-- Save button -->
+        <button id="btnSaveResponse" class="save">Save</button>
+        <!-- Close button -->
+        <button id="btnCloseResponse" class="closedialog">Close</button>
+    </dialog>
+
+    <main id="main"></main>
+    <footer id="footer"></footer>
+</body>
+<script type="module" src="/js/dcr.js"></script>
+</html>
