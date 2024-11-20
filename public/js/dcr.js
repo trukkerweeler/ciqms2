@@ -54,8 +54,70 @@ fetch(url, { method: "GET" })
       btnClose.setAttribute("class", "btn");
       // btnClose.setAttribute('class', 'btnEditNotes');
       btnClose.textContent = "Close";
-      btnClose.setAttribute("id", "btnCloseNCM");
+      btnClose.setAttribute("id", "btnCloseDCR");
       btnClose.setAttribute("type", "submit");
+      //   Add event listener for the close button
+      btnClose.addEventListener("click", async (event) => {
+        event.preventDefault();
+        console.log("btnCloseDCR @85 button clicked");
+        // show the close dialog
+        const closeDialog = document.querySelector("#closeDialog");
+        closeDialog.showModal();
+
+        // Listen for the cancel button click
+        const cancelClose = document.querySelector("#btnCloseClose");
+        cancelClose.addEventListener("click", async (event) => {
+          event.preventDefault();
+          closeDialog.close();
+        });
+
+        // Listen for the SaveClose button click
+        const saveClose = document.querySelector("#btnSaveClose");
+        const closeUrl = "http://localhost:3010/requests/close/" + drid;
+        saveClose.addEventListener("click", async (event) => {
+          event.preventDefault();
+          //   match case decision select and change to Y-N-P
+          let decision = document.querySelector("#decision").value;
+          let decisioncode = "";
+          if (decision === "Approved") {
+            decisioncode = "A";
+          } else if (decision === "Rejected") {
+            decisioncode = "N";
+          } else {
+            decisioncode = "P";
+          }
+        //   get the new revison from the dialog
+        const newRevision = document.querySelector("#docnewrev").value;
+        const newRevDate = document.querySelector("#docnewrevdate").value;
+        const closedDate = document.querySelector("#closedate").value;
+        const decisionDate = document.querySelector("#decisiondate").value;
+
+          let data = {
+            DOCUMENT_ID: record[0]["DOCUMENT_ID"],
+            REQUEST_ID: drid,
+            DECISION: decisioncode,
+            DECISION_DATE: decisionDate,
+            CLOSED: "Y",
+            CLOSED_DATE: closedDate,
+            REVISION_LEVEL: newRevision,
+            REVISION_DATE: newRevDate,
+          };
+          if (test) {
+            console.log(data);
+          }
+          const options = {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          };
+          const response = await fetch(closeUrl, options);
+          closeDialog.close();
+          // refresh the page
+          window.location.reload();
+        });
+      });
 
       // let detailTable = document.createElement('table');
       // let thead = document.createElement('thead');
@@ -146,13 +208,14 @@ fetch(url, { method: "GET" })
         // responseText.innerHTML = "<em>No response text.</em>";
         responseText.innerHTML = "";
       } else {
-        let formattedResponseText = record[key]["RESPONSE_TEXT"]
+        let formattedResponseText = record[key]["RESPONSE_TEXT"];
         if (formattedResponseText === null) {
           formattedResponseText = "";
         } else {
           formattedResponseText = formattedResponseText.replace("\n", "<br>");
         }
-        responseText.innerHTML = formattedResponseText;}
+        responseText.innerHTML = formattedResponseText;
+      }
       //   add edit button
       const btnEditResp = document.createElement("button");
       btnEditResp.setAttribute("class", "btn");

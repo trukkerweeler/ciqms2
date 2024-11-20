@@ -30,7 +30,7 @@
             <textarea id="response" name="response"></textarea>
         </form>
         <button id="btnSaveEditReq" class="save">Save</button>
-        <button id="btnCloseEditReq" class="closedialog">Close</button>
+        <button id="btnCloseEditReq" class="closedialog">Cancel</button>
     </dialog>
     
     <dialog id="requestDialog" class="editDialog">
@@ -42,7 +42,7 @@
         <!-- Save button -->
         <button id="btnSaveRequest" class="save">Save</button>
         <!-- Close button -->
-        <button id="btnCloseRequest" class="closedialog">Close</button>
+        <button id="btnCloseRequest" class="closedialog">Cancel</button>
     </dialog>
 
     <dialog id="responseDialog" class="editDialog">
@@ -54,7 +54,31 @@
         <!-- Save button -->
         <button id="btnSaveResponse" class="save">Save</button>
         <!-- Close button -->
-        <button id="btnCloseResponse" class="closedialog">Close</button>
+        <button id="btnCloseResponse" class="closedialog">Cancel</button>
+    </dialog>
+    <!-- Close dialog -->
+    <dialog id="closeDialog" class="editDialog">
+        <div class="dialogTitle">Close DCR</div>
+        <form class="editdetail" id="closedcrform">
+            <label for="decision">Decision:</label>
+            <select id="decision" name="decision">
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Deferred">Deferred</option>
+            </select>
+            <label for="decisiondate">Decision date:</label>
+            <input type="date" id="decisiondate" name="decisiondate">
+            <label for="closedate">Close date:</label>
+            <input type="date" id="closedate" name="closedate">
+            <label for="docnewrev">New rev:</label>
+            <input type="text" id="docnewrev" name="docnewrev">
+            <label for="docnewrevdate">New rev date:</label>
+            <input type="date" id="docnewrevdate" name="docnewrevdate">
+        </form>
+        <!-- Save button -->
+        <button id="btnSaveClose" class="save">Save</button>
+        <!-- Close button -->
+        <button id="btnCloseClose" class="closedialog">Cancel</button>
     </dialog>
 
     <main id="main"></main>

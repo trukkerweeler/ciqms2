@@ -631,6 +631,14 @@ dialog form {
     margin-bottom: 25px;    
 
 }
+
+#closedcrform {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-bottom: 25px;
+}
+
 .btnDialog {
     grid-column: span 1;
     border: #000 1px solid;
