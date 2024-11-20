@@ -10,6 +10,80 @@ const mysql = require('mysql');
 
 
 // ==================================================
+// put response text
+router.put('/response/:id', (req, res) => {
+    try {
+        const connection = mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            port: 3306,
+            database: 'quality'
+        });
+        connection.connect(function(err) {
+            if (err) {
+                console.error('Error connecting: ' + err.stack);
+                return;
+            }
+        // sql to insert on duplicate key update
+        const query = `INSERT INTO DOCM_CHNG_RSPN (REQUEST_ID, RESPONSE_TEXT) VALUES ('${req.params.id}', '${req.body.RESPONSE_TEXT}') ON DUPLICATE KEY UPDATE RESPONSE_TEXT = '${req.body.RESPONSE_TEXT}'`;
+        connection.query(query, (err, rows, fields) => {
+            if (err) {
+                console.log('Failed to query for doc change response text: ' + err);
+                res.sendStatus(500);
+                return;
+            }
+            res.json(rows);
+        });
+
+        connection.end();
+        });
+    } catch (err) {
+        console.log('Error connecting to Db 42');
+        return;
+    }
+});
+
+
+// ==================================================
+// put request text
+router.put('/request/:id', (req, res) => {
+    try {
+        const connection = mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            port: 3306,
+            database: 'quality'
+        });
+        connection.connect(function(err) {
+            if (err) {
+                console.error('Error connecting: ' + err.stack);
+                return;
+            }
+        // sql to insert on duplicate key update
+        const query = `INSERT INTO DOC_CHG_REQ_TXT (REQUEST_ID, REQUEST_TEXT) VALUES ('${req.params.id}', '${req.body.REQUEST_TEXT}') ON DUPLICATE KEY UPDATE REQUEST_TEXT = '${req.body.REQUEST_TEXT}'`;
+        connection.query(query, (err, rows, fields) => {
+            if (err) {
+                console.log('Failed to query for doc change request text: ' + err);
+                res.sendStatus(500);
+                return;
+            }
+            res.json(rows);
+        });
+
+        connection.end();
+        });
+    } catch (err) {
+        console.log('Error connecting to Db 93');
+        return;
+    }
+
+});
+
+
+
+// ==================================================
 // Get all records
 router.get('/', (req, res) => {
     try {

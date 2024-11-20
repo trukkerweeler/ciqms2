@@ -43,12 +43,12 @@ fetch(url, { method: "GET" })
       divDetailBtns.setAttribute("class", "detailButtons");
       divDetailBtns.setAttribute("id", "detailButtons");
 
-      const btnEditReq = document.createElement("button");
-      btnEditReq.setAttribute("class", "btn");
-      btnEditReq.setAttribute("class", "btnEditNotes");
-      btnEditReq.textContent = "Edit";
-      btnEditReq.setAttribute("id", "btnEditReq");
-      btnEditReq.setAttribute("type", "submit");
+      const btnEditDetails = document.createElement("button");
+      btnEditDetails.setAttribute("class", "btn");
+      btnEditDetails.setAttribute("class", "btnEditNotes");
+      btnEditDetails.textContent = "Edit";
+      btnEditDetails.setAttribute("id", "btnEditDetails");
+      btnEditDetails.setAttribute("type", "submit");
 
       const btnClose = document.createElement("button");
       btnClose.setAttribute("class", "btn");
@@ -60,8 +60,8 @@ fetch(url, { method: "GET" })
       // let detailTable = document.createElement('table');
       // let thead = document.createElement('thead');
       detailSection.appendChild(detailHeading);
-      // divDetailBtns.appendChild(btnClose);
-      divDetailBtns.appendChild(btnEditReq);
+      divDetailBtns.appendChild(btnClose);
+      divDetailBtns.appendChild(btnEditDetails);
       detailSection.appendChild(divDetailBtns);
 
       const fieldList = [
@@ -114,17 +114,23 @@ fetch(url, { method: "GET" })
       requestSection.appendChild(requestHeading);
       const requestText = document.createElement("p");
       requestText.setAttribute("id", "requestText");
-      requestText.textContent = record[key]["REQUEST_TEXT"];
+      let formattedRequestText = record[key]["REQUEST_TEXT"];
+      if (formattedRequestText === null) {
+        formattedRequestText = "";
+      } else {
+        formattedRequestText = formattedRequestText.replace("\n", "<br>");
+      }
+      requestText.innerHTML = formattedRequestText;
       //   add edit button
-      const btnEditText = document.createElement("button");
-      btnEditText.setAttribute("class", "btn");
-      btnEditText.setAttribute("class", "btnEditNotes");
-      btnEditText.textContent = "Edit";
-      btnEditText.setAttribute("id", "btnEditText");
-      btnEditText.setAttribute("type", "submit");
+      const btnEditRequest = document.createElement("button");
+      btnEditRequest.setAttribute("class", "btn");
+      btnEditRequest.setAttribute("class", "btnEditNotes");
+      btnEditRequest.textContent = "Edit";
+      btnEditRequest.setAttribute("id", "btnEditRequest");
+      btnEditRequest.setAttribute("type", "submit");
 
       requestSection.appendChild(requestText);
-      requestSection.appendChild(btnEditText);
+      requestSection.appendChild(btnEditRequest);
 
       //   Make response section
       const responseSection = document.createElement("section");
@@ -140,8 +146,13 @@ fetch(url, { method: "GET" })
         // responseText.innerHTML = "<em>No response text.</em>";
         responseText.innerHTML = "";
       } else {
-        responseText.innerHTML = record[key]["RESPONSE_TEXT"];
-      }
+        let formattedResponseText = record[key]["RESPONSE_TEXT"]
+        if (formattedResponseText === null) {
+          formattedResponseText = "";
+        } else {
+          formattedResponseText = formattedResponseText.replace("\n", "<br>");
+        }
+        responseText.innerHTML = formattedResponseText;}
       //   add edit button
       const btnEditResp = document.createElement("button");
       btnEditResp.setAttribute("class", "btn");
@@ -160,8 +171,6 @@ fetch(url, { method: "GET" })
       main.appendChild(responseSection);
     }
 
-
-
     // =============================================
     // Listen for click on close dialog button class
     const closedialog = document.querySelectorAll(".closedialog");
@@ -176,108 +185,125 @@ fetch(url, { method: "GET" })
     });
 
     // =============================================
-    // Listen for the editEditReq button
-    const editDetail = document.querySelector("#btnEditReq");
+    // Listen for the btnEditDetails button
+    const editDetail = document.querySelector("#btnEditDetails");
     editDetail.addEventListener("click", async (event) => {
-      const requestDialog = document.querySelector("#requestDialog");
-      const detailDialogForm = document.querySelector("#editdocform");
-      const label = document.createElement("label");
       // prevent the default action
       event.preventDefault();
+      console.log("btnEditDetails @184 button clicked");
+      const detailDialog = document.querySelector("#detailDialog");
 
-      // Clear the dialog
-      while (requestDialog.firstChild) {
-        requestDialog.removeChild(requestDialog.firstChild);
-      }
+      // show the detail dialog
+      detailDialog.showModal();
+    });
+
+    // Listen for the saveDetail button click
+    const saveDetail = document.querySelector("#btnSaveEditReq");
+    const detailsUrl = "http://localhost:3000/sysdocs/" + drid;
+    saveDetail.addEventListener("click", async (event) => {
+      // prevent the default action
+      event.preventDefault();
+      // get the input id
+      const nid = document.querySelector("#nid");
+      let didValue = drid;
+
+      let data = {
+        DOCUMENT_ID: didValue,
+      };
 
       for (const key in record) {
         for (const field in record[key]) {
-          if (["REQUEST_DATE", "ASSIGNED_TO", "DUE_DATE"].includes(field)) {
-            // console.log(field);
-            const fieldDesc = document.createElement("label");
-            fieldDesc.textContent = field;
-            requestDialog.appendChild(fieldDesc);
-            const formfield = document.createElement("input");
-            formfield.setAttribute("type", "text");
-            formfield.setAttribute("id", field);
-            formfield.setAttribute("class", "field");
-            formfield.setAttribute("class", "detailedit");
-            // if null, set the value to empty string
-            if (record[key][field] === null) {
-              formfield.setAttribute("value", "");
-            } else {
-              // if the last 4 of field is 'DATE', slice the date
-              if (field.slice(-4) === "DATE") {
-                formfield.setAttribute("type", "date");
-                formfield.setAttribute(
-                  "value",
-                  record[key][field].slice(0, 10)
-                );
-              } else {
-                formfield.setAttribute("value", record[key][field]);
-              }
-            }
-            requestDialog.appendChild(formfield);
+          if (
+            [
+              "NAME",
+              "TYPE",
+              "SUBJECT",
+              "STATUS",
+              "REVISION_LEVEL",
+              "ISSUE_DATE",
+              "CTRL_DOC",
+              "DIST_DOC",
+            ].includes(field)
+          ) {
+            const fieldname = field;
+            const fieldvalue = document.querySelector("#" + field).value;
+            data = { ...data, [fieldname]: fieldvalue };
           }
         }
+      }
+      // add the user to the data object
+      data = { ...data, MODIFIED_BY: user };
+      // add the modified date to the data object
+      const modifiedDate = new Date();
+      data = { ...data, MODIFIED_DATE: new Date().toLocaleString() };
 
-        const saveDetail = document.createElement("button");
-        saveDetail.textContent = "Save";
-        saveDetail.setAttribute("class", "btn");
-        saveDetail.setAttribute("class", "dialogSaveBtn");
-        saveDetail.setAttribute("id", "saveDetail");
-        requestDialog.appendChild(saveDetail);
-
-        const btnCancelDetail = document.createElement("button");
-        btnCancelDetail.textContent = "Cancel";
-        btnCancelDetail.setAttribute("class", "btn");
-        btnCancelDetail.setAttribute("class", "closedialog");
-        btnCancelDetail.setAttribute("id", "btnCancelDetail");
-        requestDialog.appendChild(btnCancelDetail);
+      if (test) {
+        console.log(data);
       }
 
-      // show the detail dialog
-    //   requestDialog.showModal();
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
 
-      // Listen for the saveDetail button click
-      const saveDetail = document.querySelector("#saveDetail");
-      const detailsUrl = "http://localhost:3000/sysdocs/" + drid;
-      saveDetail.addEventListener("click", async (event) => {
+      const response = await fetch(detailsUrl, options);
+      // const json = await response.json();
+      // searchbutton.click();
+      requestDialog.close();
+      // refresh the page
+      window.location.reload();
+    });
+
+    //   Add event listener for the request button - Notes
+    const btnEditRequest = document.querySelector("#btnEditRequest");
+    btnEditRequest.addEventListener("click", async (event) => {
+      event.preventDefault();
+      console.log("btnEditRequest @256 button clicked");
+      const requestDialog = document.querySelector("#requestDialog");
+      requestDialog.showModal();
+
+      // Listen for the saveRequest button click
+      const saveRequest = document.querySelector("#btnSaveRequest");
+      const requestUrl = "http://localhost:3010/requests/request/" + drid;
+      saveRequest.addEventListener("click", async (event) => {
         // prevent the default action
         event.preventDefault();
         // get the input id
         const nid = document.querySelector("#nid");
-        let didValue = drid;
+        let dridValue = drid;
 
         let data = {
-          DOCUMENT_ID: didValue,
+          REQUEST_ID: dridValue,
         };
 
-        for (const key in record) {
-          for (const field in record[key]) {
-            if (
-              [
-                "NAME",
-                "TYPE",
-                "SUBJECT",
-                "STATUS",
-                "REVISION_LEVEL",
-                "ISSUE_DATE",
-                "CTRL_DOC",
-                "DIST_DOC",
-              ].includes(field)
-            ) {
-              const fieldname = field;
-              const fieldvalue = document.querySelector("#" + field).value;
-              data = { ...data, [fieldname]: fieldvalue };
-            }
-          }
+        let existingText = record[0]["REQUEST_TEXT"];
+        // if the existing text is null then set it to an empty string
+        if (existingText === null) {
+          existingText = "";
         }
-        // add the user to the data object
-        data = { ...data, MODIFIED_BY: user };
-        // add the modified date to the data object
-        const modifiedDate = new Date();
-        data = { ...data, MODIFIED_DATE: new Date().toLocaleString() };
+
+        // get the new text value, if it exists then update the data object
+        if (document.querySelector("#request").value !== "") {
+          const newReqText = document.querySelector("#request").value;
+          // prepend the newReqText with user and date
+          let newText =
+            user +
+            " - " +
+            new Date().toLocaleString() +
+            "<br>" +
+            newReqText +
+            "<br><br>" +
+            existingText;
+          // replace the break tags with newline characters
+          newText = newText.replace(/<br>/g, "\n");
+          data = { ...data, REQUEST_TEXT: newText };
+        } else {
+          alert("Please enter new request text.");
+          return;
+        }
 
         if (test) {
           console.log(data);
@@ -291,53 +317,85 @@ fetch(url, { method: "GET" })
           body: JSON.stringify(data),
         };
 
-        const response = await fetch(detailsUrl, options);
+        const response = await fetch(requestUrl, options);
         // const json = await response.json();
         // searchbutton.click();
         requestDialog.close();
         // refresh the page
         window.location.reload();
       });
-
-      // =============================================
-      // Listen for the close button click
-      const closebutton = document.querySelector("#btnCancelDetail");
-      closebutton.addEventListener("click", async (event) => {
-        // prevent the default action
-        event.preventDefault();
-        // close the requestDialog
-        const requestDialog = document.querySelector("#requestDialog");
-        requestDialog.close();
-      });
     });
+    // });
 
     //   Add event listener for the response button
     const editResponse = document.querySelector("#btnEditResp");
     editResponse.addEventListener("click", async (event) => {
       event.preventDefault();
+      console.log("btnEditResp @342 button");
       const responseDialog = document.querySelector("#responseDialog");
       // show the dialog
       responseDialog.showModal();
-    });
 
-    //   Add event listener for the request button
-    const editRequest = document.querySelector("#btnEditText");
-    editRequest.addEventListener("click", async (event) => {
-      event.preventDefault();
-      const requestDialog = document.querySelector("#requestDialog");
-      // show the dialog
-      requestDialog.showModal();
-    });
+      // Listen for the saveResponse button click
+      const saveResponse = document.querySelector("#btnSaveResponse");
+      const responseUrl = "http://localhost:3010/requests/response/" + drid;
 
-    // =============================================
-    // Listen for the btnEditReq button click
-    const btnEditReq = document.querySelector("#btnEditReq");
-    btnEditReq.addEventListener("click", async (event) => {
-      // prvent the default action
-      event.preventDefault();
-      // show the detail dialog
-      const requestDialog = document.querySelector("#requestDialog");
-      requestDialog.showModal();
-    });
+      saveResponse.addEventListener("click", async (event) => {
+        // prevent the default action
+        event.preventDefault();
+        // get the input id
+        const nid = document.querySelector("#nid");
+        let dridValue = drid;
 
+        let data = {
+          REQUEST_ID: dridValue,
+        };
+
+        let existingResponseText = record[0]["RESPONSE_TEXT"];
+        // if the existing text is null then set it to an empty string
+        if (existingResponseText === null) {
+          existingResponseText = "";
+        }
+        // console.log("existingResponseText: " + existingResponseText);
+        // if there is no new text then alert the user
+        if (document.querySelector("#dcrresponse").value === "") {
+          alert("Please enter new response text.");
+          return;
+        }
+        let newRespText = document.querySelector("#dcrresponse").value;
+        // prepend the newReqText with user and date
+        let compositeResponseText =
+          user +
+          " - " +
+          new Date().toLocaleString() +
+          "<br>" +
+          newRespText +
+          "<br><br>" +
+          existingResponseText;
+
+        // replace the break tags with newline characters
+        compositeResponseText = compositeResponseText.replace(/<br>/g, "\n");
+        // console.log("compositeResponseText: " + compositeResponseText);
+        data = { ...data, RESPONSE_TEXT: compositeResponseText };
+
+        if (test) {
+          console.log(data);
+        }
+
+        const options = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        };
+
+        const response = await fetch(responseUrl, options);
+        // const json = await response.json();
+        // searchbutton.click();
+        responseDialog.close();
+        // refresh the page
+        window.location.reload();
+      });
+    });
   });

@@ -20,7 +20,7 @@
         <button id="btnConfirmNo" class="confirmNo">No</button>
     </dialog>
     <dialog id="detailDialog" class="editDialog">
-        <div class="dialogTitle">Edit Request</div>
+        <div class="dialogTitle">Edit Details</div>
         <form class="editdetail" id="editreqform">
             <label for="assignedto"></label>
             <input type="text" id="assignedto" name="assignedto">
@@ -29,6 +29,7 @@
             <label for="response"></label>
             <textarea id="response" name="response"></textarea>
         </form>
+        <button id="btnSaveEditReq" class="save">Save</button>
         <button id="btnCloseEditReq" class="closedialog">Close</button>
     </dialog>
     
@@ -47,8 +48,8 @@
     <dialog id="responseDialog" class="editDialog">
         <div class="dialogTitle">Append Response</div>
         <form class="editdetail newresp" id="newrespform">
-            <label for="response"></label>
-            <textarea id="response" name="response"></textarea>
+            <label for="dcrresponse"></label>
+            <textarea id="dcrresponse" name="dcrresponse"></textarea>
         </form>
         <!-- Save button -->
         <button id="btnSaveResponse" class="save">Save</button>
