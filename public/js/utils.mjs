@@ -15,6 +15,29 @@ export function renderWithTemplate(template, parentElement, data, callback, posi
     }
   }
 
+export function renderWithTemplate2(template, parentElement, data, callback, position = "afterbegin"){
+    if (parentElement) {
+      let output = template;
+      for (const key in data) {
+        const regex = new RegExp(`{{${key}}}`, "g");
+        output = output.replace(regex, data[key]);
+      }
+      parentElement.insertAdjacentHTML(position, output);
+  }
+  else {
+    console.error("Parent element is null or undefined.");
+  }
+}
+
+export async function loadReports(data){
+    const main = document.querySelector('main');
+    const reportsTemplate = await loadTemplate("/partials/report.html");
+    for (const report of data) {
+      renderWithTemplate2(reportsTemplate, main, report);
+    }
+  }
+
+
 export async function loadHeaderFooter(){
     const headerTemplate = await loadTemplate("/partials/header.html");
     const headerElement = document.querySelector("#header");
@@ -26,6 +49,7 @@ export async function loadHeaderFooter(){
     renderWithTemplate(headerTemplate, headerElement);
     renderWithTemplate(footerTemplate, footerElement);
   }
+
 
   // get user value from config.json file
 export async function getUserValue() {
@@ -75,4 +99,19 @@ export function getDocType(docid) {
     proposedDocType = 'F';
   }
   return proposedDocType;
+}
+
+// return the parameter date in a yyyy-mm-dd format
+export function displayDate(date) {
+  if (!date) {
+    return "";
+  }
+  
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+  // if the month or day is less than 10, add a leading zero
+  return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+  
 }

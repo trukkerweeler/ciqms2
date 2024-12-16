@@ -15,7 +15,35 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error fetching data:', error));
 
 });
-
+const style = document.createElement('style');
+style.textContent = `
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    th {
+        position: sticky;
+        top: 0;
+        // background-color: #f2f2f2;
+        z-index: 1;
+    }
+    tbody {
+        display: block;
+        max-height: 400px;
+        overflow-y: auto;
+        width: 100%;
+    }
+    thead, tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+`;
+document.head.appendChild(style);
 function createTable(data) {
     const table = document.createElement('table');
     const headers = Object.keys(data[0]);

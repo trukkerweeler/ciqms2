@@ -64,6 +64,16 @@ app.use("/attendance", attendanceRoutes);
 const projectRoutes = require("./routes/project");
 app.use("/project", projectRoutes);
 
+const sysdocReportRoutes = require("./routes/sysdocreport");
+app.use("/sysdocReport", sysdocReportRoutes);
+
+const ctaRoutes = require("./routes/ctareport");
+app.use("/ctareport", ctaRoutes);
+
+const pmReportRoutes = require("./routes/pmreport");
+app.use("/pmreport", pmReportRoutes);
+
+
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);
 });

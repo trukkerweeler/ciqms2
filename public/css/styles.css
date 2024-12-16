@@ -733,6 +733,12 @@ input {
     margin-bottom: 100px;
     gap: 10px;
 }
+.report-anchor {
+    grid-column: span 3;
+    text-align: center;
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+}
 
 
 @media print {
