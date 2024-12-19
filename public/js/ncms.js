@@ -12,6 +12,16 @@ const year = new Date().getFullYear();
 // const url = `http://localhost:${NONCONFORMANCE_PORT}/ncm`;
 const url = `http://localhost:3010/ncm`;
 
+function getTrend(processId) {
+    const dialog = document.getElementById('dialog');
+    dialog.showModal();
+    document.body.appendChild(dialog);
+    const close = document.querySelector('.close');
+    close.addEventListener('click', () => {
+        dialog.remove();
+    });
+}
+
 function getRecords () {
     const main = document.querySelector('main');
     
@@ -33,6 +43,9 @@ function getRecords () {
             if (key == 'NCM_TYPE') {
                 th.textContent = 'Type';
             }
+            if (key == 'PROCESS_ID') {
+                th.textContent = 'Trend';
+            }
             header.appendChild(th);
             // }
         }
@@ -48,8 +61,25 @@ function getRecords () {
                         td.textContent = record[key].slice(0,10);
                     } else {
                         if (key == 'NCM_ID') {
-                            // td.innerHTML = `<a href="http://localhost:${NONCONFORMANCE_PORT}/input.html?id=${record[key]}">${record[key]}</a>`;
-                            td.innerHTML = `<a href="http://localhost:3010/ncm.html?id=${record[key]}">${record[key]}</a>`;
+                            td.innerHTML = `<a href="http://localhost:3010/ncm.html?id=${record[key]}">${record[key]}</a>`;                        
+                        } else if (key == 'PROCESS_ID') {
+                            const button = document.createElement('button');
+                            button.className = 'btn rowbtn';
+                            let processId = record[key];
+                            if (processId == null) {
+                                processId = 'Edit';
+                            }
+                            button.textContent = processId;
+                            button.addEventListener('click', () => {
+                                window.location.href = `http://localhost:3010/trend.html?id=${record['NCM_ID']}`;
+                                // console.log('process id:', record['NCM_ID']);
+                                // run function to get process record and open dialog
+                                // getTrend(record['NCM_ID']);
+
+
+                            });
+                            td.appendChild(button);
+
                         } else {
                             td.textContent = record[key];
                         }

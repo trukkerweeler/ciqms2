@@ -73,6 +73,9 @@ app.use("/ctareport", ctaRoutes);
 const pmReportRoutes = require("./routes/pmreport");
 app.use("/pmreport", pmReportRoutes);
 
+const trendRoutes = require("./routes/trend");
+app.use("/trend", trendRoutes);
+
 
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);

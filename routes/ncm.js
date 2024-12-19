@@ -34,6 +34,7 @@ router.get('/', (req, res) => {
         , n.DUE_DATE        
         , n.PRODUCT_ID
         , n.PO_NUMBER
+        , n.PROCESS_ID
         , ne.DESCRIPTION
         , n.CLOSED
         from NONCONFORMANCE n 
