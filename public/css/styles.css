@@ -759,6 +759,7 @@ input {
     margin-bottom: 25px;
     padding-left: 10%;
     padding-right: 10%;
+    max-width: 500px;
 }
 
 
