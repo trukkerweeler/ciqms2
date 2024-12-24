@@ -125,6 +125,8 @@ router.post('/', (req, res) => {
         const query = `insert into NONCONFORMANCE (NCM_ID
             , NCM_DATE
             , PEOPLE_ID
+            , CUSTOMER_ID
+            , SUPPLIER_ID
             , ASSIGNED_TO
             , DUE_DATE
             , NCM_TYPE
@@ -142,6 +144,8 @@ router.post('/', (req, res) => {
                 '${req.body.NCM_ID}'
                 , '${req.body.NCM_DATE}'
                 , '${req.body.PEOPLE_ID}'
+                , '${req.body.CUSTOMER_ID}'
+                , '${req.body.SUPPLIER_ID}'
                 , '${req.body.ASSIGNED_TO}'
                 , '${req.body.DUE_DATE}'
                 , '${req.body.NCM_TYPE}'
@@ -198,7 +202,7 @@ router.post('/', (req, res) => {
         });
 
     } catch (err) {
-        console.log('Error connecting to Db 188');
+        console.log('Error connecting to Db 205');
         return;
     }
 
@@ -229,6 +233,8 @@ router.get('/:id', (req, res) => {
         , NCM_DATE
         , n.DUE_DATE
         , n.ASSIGNED_TO
+        , n.CUSTOMER_ID
+        , n.SUPPLIER_ID
         , NCM_TYPE
         , n.SUBJECT
         , n.CLOSED
@@ -250,7 +256,7 @@ router.get('/:id', (req, res) => {
 
         connection.query(query, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective actions: ' + err);
+                console.log('Failed to query for nonconformance: ' + err);
                 res.sendStatus(500);
                 return;
             }
@@ -358,6 +364,8 @@ router.put('/details/:id', (req, res) => {
         NCM_DATE = '${req.body.NCM_DATE}',
         DUE_DATE = '${req.body.DUE_DATE}',
         PEOPLE_ID = '${req.body.PEOPLE_ID}',
+        CUSTOMER_ID = '${req.body.CUSTOMER_ID}',
+        SUPPLIER_ID = '${req.body.SUPPLIER_ID}',
         ASSIGNED_TO = '${req.body.ASSIGNED_TO}',
         NCM_TYPE = '${req.body.NCM_TYPE}',
         SUBJECT = '${req.body.SUBJECT}',

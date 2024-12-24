@@ -449,7 +449,7 @@ while (main.firstChild) {
 
         for (const key in record) {
             for (const field in record[key]) {
-                 if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1'].includes (field)) {
+                 if (['PEOPLE_ID', 'NCM_DATE', 'ASSIGNED_TO', 'DUE_DATE', 'NCM_TYPE', 'SUBJECT','PRODUCT_ID', 'LOT_NUMBER', 'LOT_SIZE', 'USER_DEFINED_1', 'CUSTOMER_ID', 'SUPPLIER_ID'].includes (field)) {
                 // console.log(field);
                 const fieldDesc = document.createElement('label');
                 fieldDesc.textContent = field;
