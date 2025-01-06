@@ -68,6 +68,10 @@ function exesAndOhs(newResponse) {
       newResponse = "X";
     } else if (newResponse.match(/Filed,/gi)) {
       newResponse = "X";
+    } else if (newResponse.match(/Retrieved/gi)) {
+      newResponse = "X";
+    } else if (newResponse.match(/Inop/gi)) {
+      newResponse = "I";
     } else {
       newResponse = newResponse;
     }
