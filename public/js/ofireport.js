@@ -1,50 +1,78 @@
-// import { loadHeaderFooter } from "./utils.mjs";
-// loadHeaderFooter();
-import { displayDate } from "./utils.mjs";
-
-const url = "http://localhost:3010/ofireport";
-
-const months = [];
-const today = new Date();
-const currentMonth = today.getMonth();
-const currentYear = today.getFullYear();
-
-// get the data from the server and display it in a table
-fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-        const main = document.getElementById("main");
-        const h1 = document.createElement("h1");
-        h1.textContent = "Opportunity Report";
-        main.appendChild(h1);
-        const table = document.createElement("table");
-        main.appendChild(table);
-        const thead = document.createElement("thead");
-        table.appendChild(thead);
-        const headerRow = document.createElement("tr");
-        thead.appendChild(headerRow);
-        const headers = Object.keys(data[0]);
-        headers.forEach((header) => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-        }
-        );
-
-        const tbody = document.createElement("tbody");
-        table.appendChild(tbody);
-        data.forEach((row) => {
-        const tr = document.createElement("tr");
-        tbody.appendChild(tr);
-        headers.forEach((header) => {
-            const td = document.createElement("td");
-            // if the column ends with "DATE" then format it as a date
-            if (header.endsWith("DATE") || header === "DATE_TIME") {
-            td.textContent = displayDate(row[header]);
+import { loadHeaderFooter } from './utils.mjs';
+loadHeaderFooter();
+document.querySelector('#subjectFilter').addEventListener('keyup', function(event) {
+    const filter = event.target.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const createdCell = row.querySelector('td:nth-child(1)'); // Assuming INPUT_DATE is the first column
+        if (createdCell) {
+            const year = new Date(createdCell.textContent).getFullYear().toString();
+            // const yearText = createdCell.textContent.toLowerCase();
+            if (year.includes(filter)) {
+                row.style.display = '';
             } else {
-                td.textContent = row[header];
+                row.style.display = 'none';
+            }
+        }
+    });
+});
+
+// create url using the port from the environment variable
+// const port = process.env.PORT || 3003;
+// const port = process.env.PORT || 3010;
+const url = `http://localhost:3010/ofireport`;
+
+function getRecords () {
+    const main = document.querySelector('main');
+    
+    fetch(url, { method: 'GET' })
+
+    .then(response => response.json())
+    .then(records => {
+        // console.log(records);
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+        const header = document.createElement('tr');
+        const td = document.createElement('td');
+        
+        for (let key in records[0]) {
+            // if (fieldList.includes(key)){
+            const th = document.createElement('th');
+            th.textContent = key;
+            header.appendChild(th);
+            // }
+        }
+        thead.appendChild(header);
+
+        for (let record of records) {
+            const tr = document.createElement('tr');
+            for (let key in record) {
+                const td = document.createElement('td');
+                // console.log(key.substring(key.length - 4));
+                if (key !== null) {
+                    if (key.substring(key.length - 4) === 'DATE' && key.length > 0 && record[key] !== null) {
+                        td.textContent = record[key].slice(0,10);
+                    } else {
+                        if (key == 'INPUT_ID') {
+                            td.innerHTML = `<a href="http://localhost:3010/input.html?id=${record[key]}">${record[key]}</a>`;
+                        } else {
+                            td.textContent = record[key];
+                        }
+                    }
+                } else {
+                    td.textContent = record[key];
             }
             tr.appendChild(td);
-        });
-        });
-    });
+        }
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        main.appendChild(table);
+    })
+}
+
+getRecords();

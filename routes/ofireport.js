@@ -25,7 +25,8 @@ router.get("/", (req, res) => {
 
       const currentYear = new Date().getFullYear();
       const lastYear = currentYear - 1;
-      const query = `SELECT pi.INPUT_ID, PEOPLE_ID, SUBJECT, pit.INPUT_TEXT from PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID WHERE YEAR(INPUT_DATE) = ${lastYear} and INPUT_TYPE = 'OPPR' ORDER BY INPUT_ID DESC;`;
+      // const query = `SELECT pi.INPUT_DATE, pi.INPUT_ID, PEOPLE_ID, SUBJECT, pit.INPUT_TEXT from PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID WHERE YEAR(INPUT_DATE) = ${lastYear} and INPUT_TYPE = 'OPPR' ORDER BY INPUT_ID DESC;`;
+      const query = `SELECT pi.INPUT_DATE, pi.INPUT_ID, PEOPLE_ID, SUBJECT, pit.INPUT_TEXT, CLOSED from PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID WHERE INPUT_TYPE = 'OPPR' ORDER BY INPUT_ID DESC;`;
       connection.query(query, (err, rows, fields) => {
         if (err) {
           console.log("Failed to query for reports: " + err);

@@ -762,6 +762,10 @@ input {
     max-width: 500px;
 }
 
+#yearfilter {
+    margin-bottom: 12px;
+}
+
 
 @media print {
     form{
