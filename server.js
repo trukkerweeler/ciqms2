@@ -79,6 +79,9 @@ app.use("/trend", trendRoutes);
 const custRoutes = require("./routes/customer");
 app.use("/customer", custRoutes);
 
+const ofireportRoutes = require("./routes/ofireport");
+app.use("/ofireport", ofireportRoutes);
+
 
 app.listen(port, async() => {
   // console.log(`Example app listening at http://localhost:${port}`);
