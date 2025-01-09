@@ -1,6 +1,6 @@
 // import { loadHeaderFooter } from "./utils.mjs";
 // loadHeaderFooter();
-const url = "http://localhost:3010/pmreport";
+const url = "http://localhost:3010/reports/pm";
 
 const months = [];
 const today = new Date();

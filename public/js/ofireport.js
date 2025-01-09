@@ -21,7 +21,7 @@ document.querySelector('#subjectFilter').addEventListener('keyup', function(even
 // create url using the port from the environment variable
 // const port = process.env.PORT || 3003;
 // const port = process.env.PORT || 3010;
-const url = `http://localhost:3010/ofireport`;
+const url = `http://localhost:3010/reports/ofi`;
 
 function getRecords () {
     const main = document.querySelector('main');

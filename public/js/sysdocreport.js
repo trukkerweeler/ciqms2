@@ -2,7 +2,7 @@
 // loadHeaderFooter();
 import { displayDate } from "./utils.mjs";
 
-const url = "http://localhost:3010/sysdocReport";
+const url = "http://localhost:3010/reports/sysdoc";
 
 const months = [];
 const today = new Date();

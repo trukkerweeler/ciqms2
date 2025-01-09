@@ -2,7 +2,7 @@
 // loadHeaderFooter();
 import { displayDate } from "./utils.mjs";
 
-const url = "http://localhost:3010/ctareport";
+const url = "http://localhost:3010/reports/cta";
 
 const months = [];
 const today = new Date();

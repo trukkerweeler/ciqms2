@@ -64,23 +64,15 @@ app.use("/attendance", attendanceRoutes);
 const projectRoutes = require("./routes/project");
 app.use("/project", projectRoutes);
 
-const sysdocReportRoutes = require("./routes/sysdocreport");
-app.use("/sysdocReport", sysdocReportRoutes);
-
-const ctaRoutes = require("./routes/ctareport");
-app.use("/ctareport", ctaRoutes);
-
-const pmReportRoutes = require("./routes/pmreport");
-app.use("/pmreport", pmReportRoutes);
-
 const trendRoutes = require("./routes/trend");
 app.use("/trend", trendRoutes);
 
 const custRoutes = require("./routes/customer");
 app.use("/customer", custRoutes);
 
-const ofireportRoutes = require("./routes/ofireport");
-app.use("/ofireport", ofireportRoutes);
+
+const reportsRoutes = require("./routes/reports");
+app.use("/reports", reportsRoutes);
 
 
 app.listen(port, async() => {
