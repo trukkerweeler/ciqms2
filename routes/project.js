@@ -1,9 +1,8 @@
 require('dotenv').config();
-// sequelize...
+
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
-
 
 
 // Get all records
@@ -84,21 +83,20 @@ router.get('/:id', (req, res) => {
         , p.NAME
         , p.LEADER
         , pd.DESCRIPTION
-        FROM quality.PEOPLE_INPUT pi left join PPL_INPT_TEXT pit on pi.INPUT_ID = pit.INPUT_ID
-        left join PPL_INPT_FLUP pif on pi.INPUT_ID = pif.INPUT_ID
-        left join PPL_INPT_RSPN pir on pi.INPUT_ID = pir.INPUT_ID 
-        left join PROJECT p on pi.PROJECT_ID = p.PROJECT_ID
-        left join PROJ_DESC pd on pi.PROJECT_ID = pd.PROJECT_ID
-        where p.PROJECT_ID = '${req.params.id}'
-        order by pi.CLOSED, pi.INPUT_ID desc`;
+        FROM quality.PEOPLE_INPUT pi 
+        LEFT JOIN PPL_INPT_TEXT pit ON pi.INPUT_ID = pit.INPUT_ID
+        LEFT JOIN PPL_INPT_FLUP pif ON pi.INPUT_ID = pif.INPUT_ID
+        LEFT JOIN PPL_INPT_RSPN pir ON pi.INPUT_ID = pir.INPUT_ID 
+        LEFT JOIN PROJECT p ON pi.PROJECT_ID = p.PROJECT_ID
+        LEFT JOIN PROJ_DESC pd ON pi.PROJECT_ID = pd.PROJECT_ID
+        WHERE p.PROJECT_ID = ?
+        ORDER BY pi.CLOSED, pi.INPUT_ID DESC`;
 
-        // console.log(query);
-
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, [req.params.id], (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective actions: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for corrective actions: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
@@ -131,12 +129,20 @@ router.post('/', (req, res) => {
         }
     // console.log('Connected to DB');
 
-    const query = `insert into PROJECT (PROJECT_ID, NAME, LEADER, PROJECT_TYPE, CREATE_DATE, CREATE_BY, CLOSED) 
-    values ('${data.PROJECT_ID}', '${data.NAME}', '${data.LEADER}', '${data.PROJECT_TYPE}', '${data.CREATE_DATE}', '${data.CREATE_BY}', '${data.CLOSED}')`;
+    const query = `INSERT INTO PROJECT (PROJECT_ID, NAME, LEADER, PROJECT_TYPE, CREATE_DATE, CREATE_BY, CLOSED) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-    console.log(query);
+    console.log(`project route: ` + query);
 
-    connection.query(query, (err, rows, fields) => {
+    connection.query(query, [
+        data.PROJECT_ID, 
+        data.NAME, 
+        data.LEADER, 
+        data.PROJECT_TYPE, 
+        data.CREATE_DATE, 
+        data.CREATE_BY, 
+        data.CLOSED
+    ], (err, rows, fields) => {
         if (err) {
             console.log('Failed to query for corrective actions: ' + err);
             res.sendStatus(500);

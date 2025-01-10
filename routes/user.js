@@ -1,5 +1,5 @@
 require('dotenv').config();
-// sequelize...
+
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
@@ -23,22 +23,17 @@ router.post('/:id', async (req, res) => {
                 return;
             }
              
-        const query = `insert into APPLICATION_USER (
-            USER_ID
-            , USER_PWD
-            ) values (
-                '${req.body.username}'
-                , '${hashedPassword}'
-            )`;
+            const query = `insert into APPLICATION_USER (USER_ID, USER_PWD) values (?, ?)`;
+            const values = [req.body.username, hashedPassword];
 
-        connection.query(query, (err, rows, fields) => {
-            if (err) {
+            connection.query(query, values, (err, rows, fields) => {
+                if (err) {
                 console.log('Failed to query for USER insert: ' + err);
                 res.sendStatus(500);
                 return;
-            }
-            res.json(rows);
-        });
+                }
+                res.json(rows);
+            });
         connection.end();
         });
 
@@ -65,8 +60,9 @@ router.post('/login', async (req, res) => {
                 console.error('Error connecting: ' + err.stack);
                 return;
             }             
-        const query = `select * from APPLICATION_USER where USER_ID = '${req.body.username}'`;
-        connection.query(query, (err, rows, fields) => {
+        const query = `select * from APPLICATION_USER where USER_ID = ?`;
+        const values = [req.body.username];
+        connection.query(query, values, (err, rows, fields) => {
             if (err) {
                 res.sendStatus(400).send("Cannot connect");
                 return;

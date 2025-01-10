@@ -1,5 +1,4 @@
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -61,32 +60,24 @@ router.post('/', (req, res) => {
                 return;
             }
         
-        const query = `insert into SUPPLIER (SUPPLIER_ID
-            , NAME
-            , CITY
-            , STATE
-            , ZIP
-            , STATUS
-            , CREATE_BY
-            , CREATE_DATE) 
-            values ('${req.body.SUPPLIER_ID}'
-                , '${req.body.NAME}'
-                , '${req.body.CITY}'
-                , '${req.body.STATE}'
-                , '${req.body.ZIP}'
-                , '${req.body.STATUS}'
-                , '${req.body.CREATE_BY}'
-                , '${req.body.CREATE_DATE}')`;
+        const query = `insert into SUPPLIER (SUPPLIER_ID, NAME, CITY, STATE, ZIP, STATUS, CREATE_BY, CREATE_DATE) 
+            values (?, ?, ?, ?, ?, ?, ?, ?)`;
         
-        
-        // console.log(query);
-        
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, [
+            req.body.SUPPLIER_ID,
+            req.body.NAME,
+            req.body.CITY,
+            req.body.STATE,
+            req.body.ZIP,
+            req.body.STATUS,
+            req.body.CREATE_BY,
+            req.body.CREATE_DATE
+        ], (err, rows, fields) => {
 
             if (err) {
-                console.log('Failed to query for supplier insert: ' + err);
-                res.sendStatus(500)
-                return;
+            console.log('Failed to query for supplier insert: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
@@ -138,28 +129,23 @@ router.post('/qms', (req, res) => {
                 return;
             }
         
-        const query = `insert into SUPPLIER_QMS (SUPPLIER_ID
-            , QMS
-            , CERTIFICATE
-            , EXPIRY_DATE) 
-            values ('${req.body.SUPPLIER_ID}'
-                , '${req.body.QMS}'
-                , '${req.body.CERTIFICATE}'
-                , '${req.body.EXPIRY_DATE}')
-                `;
-        
-        
-        // console.log(query);
-        
-        connection.query(query, (err, rows, fields) => {
+            const query = `insert into SUPPLIER_QMS (SUPPLIER_ID, QMS, CERTIFICATE, EXPIRY_DATE) 
+                values (?, ?, ?, ?)`;
+            
+            connection.query(query, [
+                req.body.SUPPLIER_ID,
+                req.body.QMS,
+                req.body.CERTIFICATE,
+                req.body.EXPIRY_DATE
+            ], (err, rows, fields) => {
 
-            if (err) {
+                if (err) {
                 console.log('Failed to query for supplier qms insert: ' + err);
-                res.sendStatus(500)
+                res.sendStatus(500);
                 return;
-            }
-            res.json(rows);
-        });
+                }
+                res.json(rows);
+            });
 
         connection.end();
         });

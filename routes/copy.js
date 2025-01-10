@@ -1,4 +1,3 @@
-// import { getUserValue } from './utils.mjs';
 require('dotenv').config();
 // sequelize...
 
@@ -35,23 +34,25 @@ router.post('/', (req, res) => {
             , CLOSED
             , CREATE_DATE
             , CREATE_BY
-            ) values (
-                '${req.body.INPUT_ID}'
-                , '${req.body.INPUT_DATE}'
-                , '${req.body.PEOPLE_ID}'
-                , '${req.body.ASSIGNED_TO}'
-                , '${req.body.DUE_DATE}'
-                , '${req.body.INPUT_TYPE}'
-                , '${req.body.SUBJECT}'
-                , '${req.body.PROJECT_ID}'
-                , '${req.body.CLOSED}'
-                , '${req.body.CREATE_DATE}'
-                , '${req.body.CREATE_BY}'
-            )`;
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        const queryParams = [
+            req.body.INPUT_ID,
+            req.body.INPUT_DATE,
+            req.body.PEOPLE_ID,
+            req.body.ASSIGNED_TO,
+            req.body.DUE_DATE,
+            req.body.INPUT_TYPE,
+            req.body.SUBJECT,
+            req.body.PROJECT_ID,
+            req.body.CLOSED,
+            req.body.CREATE_DATE,
+            req.body.CREATE_BY
+        ];
         
         // console.log(query);
 
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, queryParams, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for PEOPLE_INPUT insert: ' + err);
                 res.sendStatus(500);
@@ -61,14 +62,10 @@ router.post('/', (req, res) => {
         });
 
         
-        // escape the apostrophe
-        const inputText = req.body.INPUT_TEXT.replace(/'/g, "\\'");
-        console.log(inputText);
-        // escape the backslash
-        const iid = req.body.INPUT_ID;
-        // const inputText = req.body.INPUT_TEXT.replace(/\\/g, "\\\\");
-        const insertQuery = `insert into PPL_INPT_TEXT values ('${iid}', '${inputText}')`;
-        connection.query(insertQuery, (err, rows, fields) => {
+        
+        const insertQuery = `insert into PPL_INPT_TEXT values (?, ?)`;
+        const insertQueryParams = [req.body.INPUT_ID, req.body.INPUT_TEXT];
+        connection.query(insertQuery, insertQueryParams, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for PPL_INPT_TEXT insert: ' + err);
                 res.sendStatus(500);
@@ -76,8 +73,9 @@ router.post('/', (req, res) => {
             }
         });
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.INPUT_ID}' WHERE TABLE_NAME = 'PEOPLE_INPUT'`;
-        connection.query(updateQuery, (err, rows, fields) => {
+        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = ? WHERE TABLE_NAME = ?`;
+        const updateQueryParams = [req.body.INPUT_ID, 'PEOPLE_INPUT'];
+        connection.query(updateQuery, updateQueryParams, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for system id update: ' + err);
                 res.sendStatus(500);
@@ -89,7 +87,7 @@ router.post('/', (req, res) => {
         });
 
     } catch (err) {
-        console.log('Error connecting to Db (changes 175)');
+        console.log('Error connecting to Db (changes 91)');
         return;
     }
 

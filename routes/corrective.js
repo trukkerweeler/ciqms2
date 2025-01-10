@@ -1,5 +1,4 @@
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -145,21 +144,30 @@ router.post('/', (req, res) => {
             , TITLE
             , CREATE_DATE
             , CREATE_BY
-            ) values (
-                '${req.body.CORRECTIVE_ID}'
-                , '${req.body.USER_DEFINED_1}'
-                , '${req.body.REQUEST_BY}'
-                , '${req.body.ASSIGNED_TO}'
-                , '${req.body.CORRECTIVE_DATE}'
-                , '${req.body.REFERENCE}'
-                , '${req.body.CLOSED}'
-                , '${req.body.TITLE}'
-                , '${req.body.CREATE_DATE}'
-                , '${req.body.CREATE_BY}'
-            )`;
-        
-        // console.log(query);
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
+        const values = [
+            req.body.CORRECTIVE_ID,
+            req.body.USER_DEFINED_1,
+            req.body.REQUEST_BY,
+            req.body.ASSIGNED_TO,
+            req.body.CORRECTIVE_DATE,
+            req.body.REFERENCE,
+            req.body.CLOSED,
+            req.body.TITLE,
+            req.body.CREATE_DATE,
+            req.body.CREATE_BY
+        ];
+
+        connection.query(query, values, (err, rows, fields) => {
+            if (err) {
+            console.log('Failed to query for corrective insert: ' + err);
+            res.sendStatus(500);
+            return;
+            }
+            res.json(rows);
+        });
+        
         connection.query(query, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for corrective insert: ' + err);
@@ -169,11 +177,9 @@ router.post('/', (req, res) => {
             res.json(rows);
         });
 
-        // Escape the single quotes
-        req.body.NC_TREND = req.body.NC_TREND.replace(/'/g, "\\'");
-
-        const insertQuery = `insert into CORRECTIVE_TREND (CORRECTIVE_ID, NC_TREND) values ('${req.body.CORRECTIVE_ID}', '${req.body.NC_TREND}')`;
-        connection.query(insertQuery, (err, rows, fields) => {
+        const insertQuery = `insert into CORRECTIVE_TREND (CORRECTIVE_ID, NC_TREND) values (?, ?)`;
+        const insertValues = [req.body.CORRECTIVE_ID, req.body.NC_TREND];
+        connection.query(insertQuery, insertValues, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for corrective trend insert: ' + err);
                 res.sendStatus(500);
@@ -181,8 +187,9 @@ router.post('/', (req, res) => {
             }
         });
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.CORRECTIVE_ID}' WHERE TABLE_NAME = 'CORRECTIVE'`;
-        connection.query(updateQuery, (err, rows, fields) => {
+        const updateQuery = 'UPDATE SYSTEM_IDS SET CURRENT_ID = ? WHERE TABLE_NAME = ?';
+        const updateValues = [req.body.CORRECTIVE_ID, 'CORRECTIVE'];
+        connection.query(updateQuery, updateValues, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for corrective id update: ' + err);
                 res.sendStatus(500);
@@ -242,11 +249,9 @@ router.get('/:id', (req, res) => {
         left join CORRECTIVE_TREND ct on c.CORRECTIVE_ID = ct.CORRECTIVE_ID            
         left join CORRECTION ia on c.CORRECTIVE_ID = ia.CORRECTIVE_ID
         left join CORRECTIVE_CTRL cc on c.CORRECTIVE_ID = cc.CORRECTIVE_ID
-        where c.CORRECTIVE_ID = '${req.params.id}'`;
+        where c.CORRECTIVE_ID = ?`;
 
-        // console.log(query);
-
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, [req.params.id], (err, rows, fields) => {
             if (err) {
                 console.log('250 Failed to query for corrective actions: ' + err);
                 res.sendStatus(500);
@@ -325,7 +330,7 @@ router.put('/:id', (req, res) => {
         // q1 = `insert ignore into ${mytable} (CORRECTIVE_ID, CREATE_DATE) values ('${req.params.id}, now()')`
             connection.query(query, (err, rows, fields) => {
                 if (err) {
-                    console.log('321 Failed to query for corrective actions: ' + err);
+                    console.log('333 Failed to query for corrective actions: ' + err);
                     res.sendStatus(500);
                     return;
                 }
@@ -333,9 +338,8 @@ router.put('/:id', (req, res) => {
             });
 
             if (myfield === 'CONTROL_TEXT') {
-                // update the CORR_ACTION_DATE
-                const updateQuery = `UPDATE CORRECTIVE SET CORR_ACTION_DATE = NOW() WHERE CORRECTIVE_ID = '${req.params.id}'`;
-                connection.query(updateQuery, (err, rows, fields) => {
+                const updateQuery = `UPDATE CORRECTIVE SET CORR_ACTION_DATE = NOW() WHERE CORRECTIVE_ID = ?`;
+                connection.query(updateQuery, [req.params.id], (err, rows, fields) => {
                     if (err) {
                         console.log('Failed to query for corr_action_date update: ' + err);
                         res.sendStatus(500);
@@ -357,7 +361,7 @@ router.put('/:id', (req, res) => {
 // ==================================================CLOSE
 router.put('/:id/close', (req, res) => {
     // console.log("Params: " + req.params.id);
-    console.log(req.body);
+    console.log('corrective route: ' + req.body);
     let query = '';
     // closed date is locale time string
     let myNow = new Date().toLocaleString();
@@ -382,13 +386,19 @@ router.put('/:id/close', (req, res) => {
             }
 
             const query = `UPDATE CORRECTIVE SET 
-            CLOSED = '${req.body.CLOSED}'
-            , CLOSED_DATE = '${req.body.CLOSED_DATE}'
-            , MODIFIED_BY = '${req.body.MODIFIED_BY}'
-            , MODIFIED_DATE = now() 
-            WHERE CORRECTIVE_ID = '${req.params.id}'`;
+            CLOSED = ?, 
+            CLOSED_DATE = ?, 
+            MODIFIED_BY = ?, 
+            MODIFIED_DATE = now() 
+            WHERE CORRECTIVE_ID = ?`;
             // console.log(query);
-            connection.query(query, (err, rows, fields) => {
+            const values = [
+                req.body.CLOSED,
+                req.body.CLOSED_DATE,
+                req.body.MODIFIED_BY,
+                req.params.id
+            ];
+            connection.query(query, values, (err, rows, fields) => {
                 if (err) {
                     console.log('Failed to query for corrective actions: ' + err);
                     res.sendStatus(500);

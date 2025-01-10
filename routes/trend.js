@@ -78,17 +78,21 @@ router.put('/:id', (req, res) => {
         console.log('Connected to DB');
         let query = `UPDATE quality.NONCONFORMANCE SET `;
 
+        let queryParams = [];
         for (let key in data) {
-            query += `${key} = '${data[key]}', `;
+            query += `${key} = ?, `;
+            queryParams.push(data[key]);
         }
         query = query.slice(0, -2);
-        query += ` WHERE NCM_ID = '${id}'`;
+        query += ` WHERE NCM_ID = ?`;
+        queryParams.push(id);
+
         console.log("85: " + query);
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, queryParams, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for trend data: ' + err);
-                res.sendStatus(500);
-                return;
+          console.log('Failed to query for trend data: ' + err);
+          res.sendStatus(500);
+          return;
             }
             res.json(rows);
         });

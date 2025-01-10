@@ -3,7 +3,7 @@ loadHeaderFooter();
 const url = 'http://localhost:3010/sysdocs';
 const url2 = 'http://localhost:3010/docsavail';
 
-const user = getUserValue();
+const user = await getUserValue();
 
 // Send POST request to server
 const form = document.querySelector('form');
@@ -14,12 +14,6 @@ form.addEventListener('submit', async (event) => {
     requestDate.setDate(requestDate.getDate())
     let createDate = requestDate.toISOString().slice(0, 19).replace('T', ' ');
     let pathelem = document.getElementsByClassName('inputfile')[0];
-    // let ctrlpath = pathelem.files[0].name;
-    // let ctrlpath = pathelem.files[0].path;
-    // console.log(pathelem.files[0].name);
-    // console.log(pathelem.files[0].path);
-    // console.log(pathelem.name)
-    // console.log(pathelem.value)
 
     const dataJson = {
         CREATE_DATE: createDate,

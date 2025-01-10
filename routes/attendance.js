@@ -1,5 +1,4 @@
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -112,25 +111,28 @@ router.post('/', (req, res) => {
             , CREATE_BY
             , CREATED_DATE) 
         values 
-        ('${req.body.COURSE_ATND_ID}'
-        , '${req.body.COURSE_ID}'
-        , '${req.body.DATE_TIME}'
-        , '${req.body.PEOPLE_ID}'
-        , '${req.body.INSTRUCTOR}'
-        , '${req.body.MINUTES}'
-        , '${req.body.CREATE_BY}'
-        , '${req.body.CREATED_DATE}')`;
-        
-        // console.log(query);
+        (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        connection.query(query, (err, rows, fields) => {
+        const values = [
+            req.body.COURSE_ATND_ID,
+            req.body.COURSE_ID,
+            req.body.DATE_TIME,
+            req.body.PEOPLE_ID,
+            req.body.INSTRUCTOR,
+            req.body.MINUTES,
+            req.body.CREATE_BY,
+            req.body.CREATED_DATE
+        ];
+
+        connection.query(query, values, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for attendance insert: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for attendance insert: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
+        
 
         const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.COURSE_ATND_ID}' WHERE TABLE_NAME = 'CTA_ATTENDANCE'`;
         connection.query(updateQuery, (err, rows, fields) => {

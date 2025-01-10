@@ -2,7 +2,6 @@
 // CUSTOMER ROUTER
 
 require("dotenv").config();
-// sequelize...
 
 const express = require("express");
 const router = express.Router();
@@ -25,8 +24,8 @@ router.put("/response/:id", (req, res) => {
         return;
       }
       // sql to insert on duplicate key update
-      const query = `INSERT INTO DOCM_CHNG_RSPN (REQUEST_ID, RESPONSE_TEXT) VALUES ('${req.params.id}', '${req.body.RESPONSE_TEXT}') ON DUPLICATE KEY UPDATE RESPONSE_TEXT = '${req.body.RESPONSE_TEXT}'`;
-      connection.query(query, (err, rows, fields) => {
+      const query = `INSERT INTO DOCM_CHNG_RSPN (REQUEST_ID, RESPONSE_TEXT) VALUES (?, ?) ON DUPLICATE KEY UPDATE RESPONSE_TEXT = ?`;
+      connection.query(query, [req.params.id, req.body.RESPONSE_TEXT, req.body.RESPONSE_TEXT], (err, rows, fields) => {
         if (err) {
           console.log("Failed to query for doc change response text: " + err);
           res.sendStatus(500);
@@ -151,30 +150,33 @@ router.post("/", (req, res) => {
       console.log(date_due.toLocaleDateString());
       date_due.toLocaleDateString();
 
-      const query = `insert into DOCM_CHNG_RQST (REQUEST_ID
-            , REQUEST_DATE
-            , ASSIGNED_TO
-            , DUE_DATE
-            , DOCUMENT_ID
-            , CHANGE_TYPE
-            , CHANGE_REASON
-            , PRIORITY
-            , CREATE_BY
-            , CREATE_DATE) values (
-            '${req.body.REQUEST_ID}'
-            ,'${req.body.REQUEST_DATE}'
-            , '${req.body.ASSIGNED_TO}'
-            , '${req.body.DUE_DATE}'
-            , '${req.body.DOCUMENT_ID}'
-            , '${req.body.CHANGE_TYPE}'
-            , '${req.body.CHANGE_REASON}'
-            , '${req.body.PRIORITY}'
-            , '${req.body.CREATE_BY}'
-            , '${req.body.CREATE_DATE}')`;
+      const query = `INSERT INTO DOCM_CHNG_RQST (
+        REQUEST_ID,
+        REQUEST_DATE,
+        ASSIGNED_TO,
+        DUE_DATE,
+        DOCUMENT_ID,
+        CHANGE_TYPE,
+        CHANGE_REASON,
+        PRIORITY,
+        CREATE_BY,
+        CREATE_DATE
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-      // console.log(query);
-
-      connection.query(query, (err, rows, fields) => {
+      const values = [
+        req.body.REQUEST_ID,
+        req.body.REQUEST_DATE,
+        req.body.ASSIGNED_TO,
+        req.body.DUE_DATE,
+        req.body.DOCUMENT_ID,
+        req.body.CHANGE_TYPE,
+        req.body.CHANGE_REASON,
+        req.body.PRIORITY,
+        req.body.CREATE_BY,
+        req.body.CREATE_DATE
+      ];
+      
+      connection.query(query, values, (err, rows, fields) => {
         if (err) {
           console.log("Failed to query for doc change insert: " + err);
           res.sendStatus(500);
@@ -194,8 +196,8 @@ router.post("/", (req, res) => {
         }
       });
 
-      const updateQuery2 = `insert into DOC_CHG_REQ_TXT (REQUEST_ID, REQUEST_TEXT) values ('${req.body.REQUEST_ID}', '${req.body.REQUEST_TEXT}')`;
-      connection.query(updateQuery2, (err, rows, fields) => {
+      const updateQuery2 = `INSERT INTO DOC_CHG_REQ_TXT (REQUEST_ID, REQUEST_TEXT) VALUES (?, ?)`;
+      connection.query(updateQuery2, [req.body.REQUEST_ID, req.body.REQUEST_TEXT], (err, rows, fields) => {
         if (err) {
           console.log("Failed to update for doc change text: " + err);
           res.sendStatus(500);
@@ -230,11 +232,11 @@ router.get("/:id", (req, res) => {
       }
       // console.log('Connected to DB');
 
-      const query = `select NAME, EMAIL_ADDRESS, PHONE, CITY, STATE, ZIP from CUSTOMER where CUSTOMER_ID = '${req.params.id}'`;
+      const query = `SELECT NAME, EMAIL_ADDRESS, PHONE, CITY, STATE, ZIP FROM CUSTOMER WHERE CUSTOMER_ID = ?`;
 
-      connection.query(query, (err, rows, fields) => {
+      connection.query(query, [req.params.id], (err, rows, fields) => {
         if (err) {
-          console.log("Failed to query for doc change request: " + err);
+          console.log("Failed to query for customer: " + err);
           res.sendStatus(500);
           return;
         }

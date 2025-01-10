@@ -3,7 +3,6 @@
 
 // Require express
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -27,17 +26,13 @@ router.get('/:id', (req, res) => {
                 return;
             }
             
-        let did = '';
-        did = req.params.id;
-        // console.log(did);
-        const query = `select dcr.*, dcrt.REQUEST_TEXT from DOCM_CHNG_RQST dcr left join DOC_CHG_REQ_TXT dcrt on dcr.REQUEST_ID = dcrt.REQUEST_ID where dcr.DOCUMENT_ID = '${req.params.id}'`;
-        // console.log(query);
+        const query = `select dcr.*, dcrt.REQUEST_TEXT from DOCM_CHNG_RQST dcr left join DOC_CHG_REQ_TXT dcrt on dcr.REQUEST_ID = dcrt.REQUEST_ID where dcr.DOCUMENT_ID = ?`;
         
-        db.query(query, (err, rows, fields) => {
+        db.query(query, [req.params.id], (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for document history: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for document history: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });

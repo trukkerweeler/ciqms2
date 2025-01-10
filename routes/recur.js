@@ -1,4 +1,3 @@
-// import { getUserValue, get } from './utils.mjs';
 require('dotenv').config();
 
 const express = require('express');
@@ -36,12 +35,14 @@ router.post('/', async (req, res) => {
         }
         );
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.RECUR_ID}' WHERE TABLE_NAME = 'PPL_INPT_RCUR'`;
-        connection.query(updateQuery, (err, rows, fields) => {
+        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = ? WHERE TABLE_NAME = 'PPL_INPT_RCUR'`;
+        const updateInserts = [req.body.RECUR_ID];
+        const formattedUpdateQuery = mysql.format(updateQuery, updateInserts);
+        connection.query(formattedUpdateQuery, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective id update: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for corrective id update: ' + err);
+            res.sendStatus(500);
+            return;
             }
         });
 

@@ -1,6 +1,4 @@
-// import { getUserValue } from './utils.mjs';
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -22,23 +20,19 @@ router.post('/:aid', (req, res) => {
                 return;
             }
              
-        const query = `insert into NINETYONETWENTY (COLLECT_ID
-            , INPUT_ID
-            , CUSTOMER_ID
-            , UNIT
-            , VALUE
-            , SAMPLE_DATE
-            , PEOPLE_ID
-            ) values ('${req.params.aid}'
-                , '${req.body.INPUT_ID}'
-                , '${req.body.CUSTOMER_ID}'
-                , '${req.body.UNIT}'
-                , '${req.body.VALUE}'
-                , '${req.body.SAMPLE_DATE}'
-                , '${req.body.INPUT_USER}'
-            )`;
+        const query = `INSERT INTO NINETYONETWENTY (COLLECT_ID, INPUT_ID, CUSTOMER_ID, UNIT, VALUE, SAMPLE_DATE, PEOPLE_ID) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-        connection.query(query, (err, rows, fields) => {
+        const queryParams = [
+            req.params.aid,
+            req.body.INPUT_ID,
+            req.body.CUSTOMER_ID,
+            req.body.UNIT,
+            req.body.VALUE,
+            req.body.SAMPLE_DATE,
+            req.body.INPUT_USER
+        ];
+
+        connection.query(query, queryParams, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for NINETYONETWENTY insert: ' + err);
                 res.sendStatus(500);
@@ -47,9 +41,10 @@ router.post('/:aid', (req, res) => {
             res.json(rows);
         });
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.params.aid}' WHERE TABLE_NAME = 'NINETYONETWENTY'`;
+        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = ? WHERE TABLE_NAME = 'NINETYONETWENTY'`;
+        const updateParams = [req.params.aid];
 
-        connection.query(updateQuery, (err, rows, fields) => {
+        connection.query(updateQuery, updateParams, (err, rows, fields) => {
             if (err) {
                 console.log('Failed to query for system id update: ' + err);
                 res.sendStatus(500);

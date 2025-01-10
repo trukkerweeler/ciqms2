@@ -1,6 +1,4 @@
-// import { getUserValue } from './utils.mjs';
 require('dotenv').config();
-// sequelize...
 
 const express = require('express');
 const router = express.Router();
@@ -140,60 +138,54 @@ router.post('/', (req, res) => {
             , CLOSED
             , CREATE_DATE
             , CREATE_BY
-            ) values (
-                '${req.body.NCM_ID}'
-                , '${req.body.NCM_DATE}'
-                , '${req.body.PEOPLE_ID}'
-                , '${req.body.CUSTOMER_ID}'
-                , '${req.body.SUPPLIER_ID}'
-                , '${req.body.ASSIGNED_TO}'
-                , '${req.body.DUE_DATE}'
-                , '${req.body.NCM_TYPE}'
-                , '${req.body.SUBJECT}'
-                , '${req.body.CAUSE}'
-                , '${req.body.PRODUCT_ID}'
-                , '${req.body.PO_NUMBER}'
-                , '${req.body.LOT_SIZE}'
-                , '${req.body.LOT_NUMBER}'
-                , '${req.body.USER_DEFINED_1}'
-                , '${req.body.CLOSED}'
-                , '${req.body.CREATE_DATE}'
-                , '${req.body.CREATE_BY}'
-            )`;
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         
-        // console.log(query);
+        const values = [
+            req.body.NCM_ID,
+            req.body.NCM_DATE,
+            req.body.PEOPLE_ID,
+            req.body.CUSTOMER_ID,
+            req.body.SUPPLIER_ID,
+            req.body.ASSIGNED_TO,
+            req.body.DUE_DATE,
+            req.body.NCM_TYPE,
+            req.body.SUBJECT,
+            req.body.CAUSE,
+            req.body.PRODUCT_ID,
+            req.body.PO_NUMBER,
+            req.body.LOT_SIZE,
+            req.body.LOT_NUMBER,
+            req.body.USER_DEFINED_1,
+            req.body.CLOSED,
+            req.body.CREATE_DATE,
+            req.body.CREATE_BY
+        ];
 
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, values, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for PEOPLE_INPUT insert: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for PEOPLE_INPUT insert: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
 
-        
-        // escape the apostrophe
-        const ncmDesc = req.body.DESCRIPTION.replace(/'/g, "\\'");
-        // console.log(".post 167: " + ncmDesc);
-        // escape the backslash
-        const nid = req.body.NCM_ID;
-        // const ncmDesc = req.body.DESCRIPTION.replace(/\\/g, "\\\\"); 
-        const insertQuery = `insert into NCM_DESCRIPTION values ('${nid}', '${ncmDesc}')`;
-        connection.query(insertQuery, (err, rows, fields) => {
+        const insertQuery = `insert into NCM_DESCRIPTION (NCM_ID, DESCRIPTION) values (?, ?)`;
+        const insertValues = [req.body.NCM_ID, req.body.DESCRIPTION];
+        connection.query(insertQuery, insertValues, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for NONCONFORMANCE insert: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for NONCONFORMANCE insert: ' + err);
+            res.sendStatus(500);
+            return;
             }
         });
 
-        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = '${req.body.NCM_ID}' WHERE TABLE_NAME = 'NONCONFORMANCE'`;
-        connection.query(updateQuery, (err, rows, fields) => {
+        const updateQuery = `UPDATE SYSTEM_IDS SET CURRENT_ID = ? WHERE TABLE_NAME = 'NONCONFORMANCE'`;
+        connection.query(updateQuery, req.body.NCM_ID, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for system id update: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for system id update: ' + err);
+            res.sendStatus(500);
+            return;
             }
         });
 
@@ -250,15 +242,15 @@ router.get('/:id', (req, res) => {
         left join NCM_DESCRIPTION ne on n.NCM_ID = ne.NCM_ID
         left join NCM_DISPOSITION ni on n.NCM_ID = ni.NCM_ID
         left join NCM_VERIFICATION nv on n.NCM_ID = nv.NCM_ID 
-        where n.NCM_ID = '${req.params.id}'`;
+        where n.NCM_ID = ?`;
 
         // console.log(query);
 
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, [req.params.id], (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for nonconformance: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for nonconformance: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
@@ -315,16 +307,17 @@ router.put('/:id', (req, res) => {
         // console.log('Connected to DB');
         // console.log(req.body);
         const query = `REPLACE INTO ${mytable} SET 
-        NCM_ID = '${req.params.id}',
-        ${myfield} = '${appended}'`;
+        NCM_ID = ?,
+        ${myfield} = ?`;
+        const values = [req.params.id, appended];
         if (test) {
             console.log(query);
         }
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, values, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for nonconformance : ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for nonconformance : ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
@@ -361,26 +354,41 @@ router.put('/details/:id', (req, res) => {
                 return;
             }
         const query = `UPDATE NONCONFORMANCE SET 
-        NCM_DATE = '${req.body.NCM_DATE}',
-        DUE_DATE = '${req.body.DUE_DATE}',
-        PEOPLE_ID = '${req.body.PEOPLE_ID}',
-        CUSTOMER_ID = '${req.body.CUSTOMER_ID}',
-        SUPPLIER_ID = '${req.body.SUPPLIER_ID}',
-        ASSIGNED_TO = '${req.body.ASSIGNED_TO}',
-        NCM_TYPE = '${req.body.NCM_TYPE}',
-        SUBJECT = '${req.body.SUBJECT}',
-        PRODUCT_ID = '${req.body.PRODUCT_ID}',
-        LOT_SIZE = '${req.body.LOT_SIZE}',
-        LOT_NUMBER = '${req.body.LOT_NUMBER}',
-        USER_DEFINED_1 = '${req.body.USER_DEFINED_1}'
-        WHERE NCM_ID = '${req.params.id}'`;
-        // console.log(query);
+        NCM_DATE = ?,
+        DUE_DATE = ?,
+        PEOPLE_ID = ?,
+        CUSTOMER_ID = ?,
+        SUPPLIER_ID = ?,
+        ASSIGNED_TO = ?,
+        NCM_TYPE = ?,
+        SUBJECT = ?,
+        PRODUCT_ID = ?,
+        LOT_SIZE = ?,
+        LOT_NUMBER = ?,
+        USER_DEFINED_1 = ?
+        WHERE NCM_ID = ?`;
+        
+        const values = [
+            req.body.NCM_DATE,
+            req.body.DUE_DATE,
+            req.body.PEOPLE_ID,
+            req.body.CUSTOMER_ID,
+            req.body.SUPPLIER_ID,
+            req.body.ASSIGNED_TO,
+            req.body.NCM_TYPE,
+            req.body.SUBJECT,
+            req.body.PRODUCT_ID,
+            req.body.LOT_SIZE,
+            req.body.LOT_NUMBER,
+            req.body.USER_DEFINED_1,
+            req.params.id
+        ];
 
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, values, (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for nonconformance 346 : ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for nonconformance 346 : ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
@@ -415,7 +423,8 @@ router.put('/close/:id', (req, res) => {
                 console.error('Error connecting: ' + err.stack);
                 return;
             }
-        const query = `UPDATE NONCONFORMANCE SET CLOSED = 'Y', CLOSED_DATE = '${req.body.CLOSED_DATE}' WHERE NCM_ID = '${req.params.id}'`;
+        const query = `UPDATE NONCONFORMANCE SET CLOSED = ?, CLOSED_DATE = ? WHERE NCM_ID = ?`;
+        const values = ['Y', req.body.CLOSED_DATE, req.params.id];
         // console.log(query);
 
         connection.query(query, (err, rows, fields) => {
@@ -455,15 +464,15 @@ router.get('/previous/:id', (req, res) => {
             }
         // console.log('Connected to DB');
 
-        const query = `with subjects as (select * from PEOPLE_INPUT where SUBJECT = (select SUBJECT from PEOPLE_INPUT where INPUT_ID = '${req.params.id}')) select * from PPL_INPT_RSPN pir join subjects on pir.INPUT_ID = subjects.INPUT_ID order by pir.INPUT_ID desc limit 5`;
+        const query = `with subjects as (select * from PEOPLE_INPUT where SUBJECT = (select SUBJECT from PEOPLE_INPUT where INPUT_ID = ?)) select * from PPL_INPT_RSPN pir join subjects on pir.INPUT_ID = subjects.INPUT_ID order by pir.INPUT_ID desc limit 5`;
 
         // console.log(query);
 
-        connection.query(query, (err, rows, fields) => {
+        connection.query(query, [req.params.id], (err, rows, fields) => {
             if (err) {
-                console.log('Failed to query for corrective actions: ' + err);
-                res.sendStatus(500);
-                return;
+            console.log('Failed to query for ncm: ' + err);
+            res.sendStatus(500);
+            return;
             }
             res.json(rows);
         });
