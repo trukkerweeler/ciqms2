@@ -73,6 +73,8 @@ fetch(url, { method: 'GET' })
         }
         data.MODIFIED_BY = user;
         data.MODIFIED_DATE = new Date().toLocaleString();
+        const cid = data.CORRECTIVE_ID;
+        delete data.CORRECTIVE_ID;
 
         // update the trend data
         const url = `http://localhost:3010/trend/${id}`;
@@ -88,12 +90,41 @@ fetch(url, { method: 'GET' })
                 if (result.affectedRows > 0) {
                     // alert('Trend data updated');
                     // redirect to the ncm page
-                    window.location.href = `ncms.html`;
+                    // window.location.href = `ncms.html`;
                     // clear the form
-                    form.reset();
+                    // form.reset();
                 } else {
                     alert('Failed to update trend data');
                 }
             });
+
+        // update the corrective action link
+        if (cid == null) {
+            return;
+        } else {
+            const data = {};
+            data.CORRECTIVE_ID = cid;            
+            const url2 = `http://localhost:3010/trend/${id}/ncl`;
+            fetch(url2, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.affectedRows > 0) {
+                        // alert('Trend data updated');
+                        // redirect to the ncm page
+                        window.location.href = `ncms.html`;
+                        // clear the form
+                        form.reset();
+                    } else {
+                        alert('Failed to update trend data');
+                    }
+                });
+        }
+        
     });
 });

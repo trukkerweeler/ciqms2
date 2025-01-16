@@ -26,7 +26,7 @@ router.get("/:id", (req, res) => {
       }
       // console.log('Connected to DB');
 
-      const query = `SELECT NCM_ID
+      const query = `SELECT n.NCM_ID
         , CUSTOMER_ID
         , SUPPLIER_ID
         , PROCESS_ID
@@ -35,12 +35,14 @@ router.get("/:id", (req, res) => {
         , ELEMENT_NO
         , DISPOSITION_TYPE
         , TOOL_ID
+        , ncl.CORRECTIVE_ID
         FROM quality.NONCONFORMANCE n 
-        where n.NCM_ID = '${req.params.id}'`;
+        LEFT JOIN NCM_CORRECT_LINK ncl ON n.NCM_ID = ncl.NCM_ID
+        WHERE n.NCM_ID = ?`;
 
       // console.log(query);
 
-      connection.query(query, (err, rows, fields) => {
+      connection.query(query, [req.params.id], (err, rows, fields) => {
         if (err) {
           console.log("Failed to query for corrective actions: " + err);
           res.sendStatus(500);
@@ -57,12 +59,50 @@ router.get("/:id", (req, res) => {
   }
 });
 
+
+// ==================================================
+// put the corrective action link
+router.put('/:id/ncl', (req, res) => {
+  const id = req.params.id;
+  const data2 = req.body;
+  const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    port: 3306,
+    database: 'quality'
+  });
+  connection.connect(function (err) {
+    if (err) {
+      console.error('Error connecting: ' + err.stack);
+      return;
+    }
+    let columns = Object.keys(data2);
+    let placeholders = columns.map(() => '?').join(', ');
+    let updateClause = columns.map(key => `${key} = VALUES(${key})`).join(', ');
+    
+    let query = `INSERT INTO quality.NCM_CORRECT_LINK (NCM_ID, ${columns.join(', ')})
+    VALUES (?, ${placeholders})
+    ON DUPLICATE KEY UPDATE ${updateClause}`;
+    let queryParams = [id, ...Object.values(data2)];
+    
+    connection.query(query, queryParams, (err, rows, fields) => {
+      if (err) {
+        console.log('Failed to query for corrective action link: ' + err);
+        res.sendStatus(500);
+        return;
+      }
+      res.json(rows);
+    });
+    connection.end();
+  });
+});
+
 // ==================================================
 // put the trend data
 router.put('/:id', (req, res) => {
     const id = req.params.id;
     const data = req.body;
-    console.log("65: " + data);
     const connection = mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -87,7 +127,6 @@ router.put('/:id', (req, res) => {
         query += ` WHERE NCM_ID = ?`;
         queryParams.push(id);
 
-        console.log("85: " + query);
         connection.query(query, queryParams, (err, rows, fields) => {
             if (err) {
           console.log('Failed to query for trend data: ' + err);
