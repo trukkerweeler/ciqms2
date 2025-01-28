@@ -159,6 +159,9 @@ router.post('/', (req, res) => {
             req.body.CREATE_BY
         ];
 
+        // console.log(values);
+        // console.log(query);
+
         connection.query(query, values, (err, rows, fields) => {
             if (err) {
             console.log('Failed to query for corrective insert: ' + err);
@@ -166,16 +169,7 @@ router.post('/', (req, res) => {
             return;
             }
             res.json(rows);
-        });
-        
-        connection.query(query, (err, rows, fields) => {
-            if (err) {
-                console.log('Failed to query for corrective insert: ' + err);
-                res.sendStatus(500);
-                return;
-            }
-            res.json(rows);
-        });
+        });        
 
         const insertQuery = `insert into CORRECTIVE_TREND (CORRECTIVE_ID, NC_TREND) values (?, ?)`;
         const insertValues = [req.body.CORRECTIVE_ID, req.body.NC_TREND];

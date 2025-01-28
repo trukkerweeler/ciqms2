@@ -148,14 +148,14 @@ router.post("/", (req, res) => {
 
       const query = `INSERT INTO DOCM_CHNG_RQST (
         REQUEST_ID, REQUEST_DATE, ASSIGNED_TO, DUE_DATE, DOCUMENT_ID, 
-        CHANGE_TYPE, CHANGE_REASON, PRIORITY, CREATE_BY, CREATE_DATE
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        CHANGE_TYPE, CHANGE_REASON, PRIORITY, CREATE_BY, CREATE_DATE, CLOSED
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const values = [
         req.body.REQUEST_ID, req.body.REQUEST_DATE, req.body.ASSIGNED_TO, 
         req.body.DUE_DATE, req.body.DOCUMENT_ID, req.body.CHANGE_TYPE, 
         req.body.CHANGE_REASON, req.body.PRIORITY, req.body.CREATE_BY, 
-        req.body.CREATE_DATE
+        req.body.CREATE_DATE, "N"
       ];
 
       connection.query(query, values, (err, rows, fields) => {

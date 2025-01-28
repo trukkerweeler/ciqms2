@@ -3,6 +3,11 @@ loadHeaderFooter();
 
 const url = 'http://localhost:3010/corrective';
 
+// set the date to today
+let corrdate = document.getElementById('corrdate');
+let today = new Date();
+corrdate.value = today.toISOString().slice(0, 10);
+
 // Send a POST request
 const form = document.querySelector('form');
 form.addEventListener('submit', async (event) => {

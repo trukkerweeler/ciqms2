@@ -406,8 +406,6 @@ router.put('/details/:id', (req, res) => {
 router.put('/close/:id', (req, res) => {
     // console.log("Params: " + req.params.id);
     // console.log(req.body);
-    let mytable = '';
-    let appended = '';
     const myfield = Object.keys (req.body) [1]
     
     try {

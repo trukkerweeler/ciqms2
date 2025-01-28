@@ -1,9 +1,12 @@
 
 // import { exec } from "child_process";
-import { loadHeaderFooter } from "./utils.mjs";
+import { loadHeaderFooter, getUserValue } from "./utils.mjs";
 // import { exec } from 'child_process';
 // import * as fs from 'node:fs/promises';
 loadHeaderFooter();
+
+const user = await getUserValue();
+console.log(user);
 
 const url = "http://localhost:3010/ncm";
 
@@ -66,7 +69,7 @@ form.addEventListener("submit", async (event) => {
     }
   }
 
-  console.log(dataJson);
+  // console.log(dataJson);
 
   try {
     await fetch(url, {
